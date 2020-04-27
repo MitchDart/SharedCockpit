@@ -6,6 +6,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(standalone C CXX)
 
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
 endif()
@@ -38,6 +39,8 @@ set(LIBRARIES "glfw;${Vulkan_LIBRARY}")
 include_directories(${GLFW_DIR}/deps)
 
 file(GLOB sources *.cpp)
+
+configure_file( ${PROJECT_ROOT_DIR}/SharedCockpitConfig.h.in SharedCockpitConfig.h)
 
 add_executable(standalone ${sources} imgui_impl_glfw.cpp imgui_impl_vulkan.cpp ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_demo.cpp ${IMGUI_DIR}/imgui_widgets.cpp)
 target_link_libraries(standalone ${LIBRARIES})
