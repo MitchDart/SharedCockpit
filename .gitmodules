@@ -1,0 +1,6 @@
+[submodule "libs/imgx"]
+	path = libs/imgx
+	url = https://github.com/rhard/imgx.git
+[submodule "libs/glfw"]
+	path = libs/glfw
+	url = https://github.com/glfw/glfw.git
