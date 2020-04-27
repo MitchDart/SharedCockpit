@@ -1,8 +1,3 @@
-#define APL 1
-#define XPLM200
-#define XPLM210
-#define XPLM300
-#define XPLM301
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
 #include <string.h>
@@ -36,7 +31,7 @@ PLUGIN_API int XPluginStart(
 							char *		outSig,
 							char *		outDesc)
 {
-	strcpy(outName, "HelloWorld3Plugin");
+	strcpy(outName, "SharedCockpit");
 	strcpy(outSig, "xpsdk.examples.helloworld3plugin");
 	strcpy(outDesc, "A Hello World plug-in for the XPLM300 SDK.");
 	
@@ -110,3 +105,22 @@ void	draw_hello_world(XPLMWindowID in_window_id, void * in_refcon)
 	
 	XPLMDrawString(col_white, l + 10, t - 20, "Hello world!", NULL, xplmFont_Proportional);
 }
+
+#if IBM
+#include <windows.h>
+BOOL APIENTRY DllMain(HANDLE hModule,
+	DWORD ul_reason_for_call,
+	LPVOID lpReserved
+)
+{
+	switch (ul_reason_for_call)
+	{
+	case DLL_PROCESS_ATTACH:
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+	case DLL_PROCESS_DETACH:
+		break;
+	}
+	return TRUE;
+}
+#endif
