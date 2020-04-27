@@ -6,3 +6,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add the three targets
 add_subdirectory(standalone)
+add_subdirectory(xplane)
