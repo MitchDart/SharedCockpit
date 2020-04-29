@@ -16,32 +16,26 @@
 * GNU General Public License for more details.
 */
 
-#pragma once
-#include <vector>
-#include <memory>
-#include "environment.h"
-#include "imgui.h"
+#include "xplane_environment.h"
 
-/** 
- * Standalone Environment
- * 
- * This class implements the system environment for the standalone target and context.
- */ 
-class StandaloneEnvironment : public Environment
+XPlaneEnvironment::XPlaneEnvironment()
 {
-    private:
-        //List of windows currently active
-        std::vector<const ImguiWindow*> windows;
-    protected:
-        //Override
-        void createWindow(const ImguiWindow* window) override;
-    public:
-        //Constructor
-        StandaloneEnvironment();
-        ~StandaloneEnvironment();
+    
+}
 
-        /**
-         * Main loop is called for each event loop run from main.cpp
-         */
-        void mainLoop();
-};
+XPlaneEnvironment::~XPlaneEnvironment()
+{
+    //Free each window
+    for(const auto &window : windows) {
+        delete window;
+    }
+    //Clear vector to prevent seg faults
+    windows.clear();
+}
+
+void XPlaneEnvironment::createWindow(const ImguiWindow* window)
+{
+    const auto adapter = new ImgWindowAdapter(window);
+    //Store window for now
+    windows.push_back(adapter);
+}

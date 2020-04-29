@@ -25,17 +25,24 @@
  * 
  * System only knows about an ImguiWindow class therefor we need to adapt the ImgWindow class using this adapter.
  */ 
-class ImgWindowAdapter : ImgWindow
+class ImgWindowAdapter : public ImgWindow
 {
     private:
         //Window ojbect to adapt
-        ImguiWindow* window;
+        const ImguiWindow* window;
     protected:
+        //Override
+        void BuildInterface() override;
     public:
         /** 
         * Constructor
         *
         * @param window ImgWindow object to adapt to generic ImguiWindow object
         */
-        ImgWindowAdapter(ImguiWindow* window);
+        ImgWindowAdapter(const ImguiWindow* window);
+
+        /**
+         * Desconstruct delete window which we holding we we are deleted
+         */
+        ~ImgWindowAdapter();
 };

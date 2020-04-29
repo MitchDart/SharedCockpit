@@ -17,28 +17,27 @@
 */
 
 #pragma once
-#include <vector>
-#include <memory>
 #include "environment.h"
-#include "imgui.h"
+#include <vector>
+#include "imgwindow_adapter.h"
+#include "imgwindow.h"
 
 /** 
- * Standalone Environment
+ * XPlane Environment
  * 
- * This class implements the system environment for the standalone target and context.
+ * This class implements the system environment for the xplane target and context.
  */ 
-class StandaloneEnvironment : public Environment
+class XPlaneEnvironment : public Environment
 {
     private:
         //List of windows currently active
-        std::vector<const ImguiWindow*> windows;
+        std::vector<const ImgWindow*> windows;
     protected:
         //Override
         void createWindow(const ImguiWindow* window) override;
     public:
         //Constructor
-        StandaloneEnvironment();
-        ~StandaloneEnvironment();
+        XPlaneEnvironment();
 
         /**
          * Main loop is called for each event loop run from main.cpp

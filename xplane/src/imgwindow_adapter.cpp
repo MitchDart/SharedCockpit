@@ -18,7 +18,16 @@
 
 #include "imgwindow_adapter.h"
 
-ImgWindowAdapter::ImgWindowAdapter(ImgWindow* window) {
+ImgWindowAdapter::ImgWindowAdapter(const ImguiWindow* window) : ImgWindow() {
     this->window = window;
+    Init(window->getWidth(), window->getHeight(), window->getX(), window->getY());
 }
 
+void ImgWindowAdapter::BuildInterface() {
+    this->window->onDraw();
+}
+
+ImgWindowAdapter::~ImgWindowAdapter() {
+    delete this->window;
+    this->window = 0;
+}

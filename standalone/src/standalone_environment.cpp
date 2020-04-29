@@ -23,6 +23,16 @@ StandaloneEnvironment::StandaloneEnvironment()
     
 }
 
+StandaloneEnvironment::~StandaloneEnvironment()
+{
+    //Free each window
+    for(const auto &window : windows) {
+        delete window;
+    }
+    //Clear vector to prevent seg faults
+    windows.clear();
+}
+
 void StandaloneEnvironment::createWindow(const ImguiWindow* window)
 {
     //If we already have this window then don't add it again.

@@ -33,4 +33,5 @@ class FirstWindow : public ImguiWindow
         void onDraw() const override;
     public:
         FirstWindow(std::string name, int width, int height, int x, int y) : ImguiWindow(name, width, height, x, y) {};
+        ~FirstWindow() override {};
 };

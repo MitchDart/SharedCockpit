@@ -33,7 +33,8 @@ class Environment {
         /** 
         * Creates a ImguiWindow to display
         *
-        * Use this method to create a window at the relative environment with dimentions and coordinates
+        * Use this method to create a window at the relative environment with dimentions and coordinates.
+        * The environment will take the responsibility to delete the windows.
         * 
         * @param window Window object to create
         */
