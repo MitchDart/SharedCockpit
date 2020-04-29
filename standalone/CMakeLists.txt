@@ -31,9 +31,10 @@ set(IMGUI_DIR ${PROJECT_ROOT_DIR}/libs/imgx/imgui)
 include_directories(${IMGUI_DIR} .)
 
 # Libraries
+find_package(rxcpp CONFIG)
 find_package(Vulkan REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
-set(LIBRARIES "glfw;${Vulkan_LIBRARY}")
+set(LIBRARIES "glfw;${Vulkan_LIBRARY};rxcpp")
 
 # Use vulkan headers from glfw:
 include_directories(${GLFW_DIR}/deps)
