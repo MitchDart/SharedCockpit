@@ -21,6 +21,7 @@
 ImgWindowAdapter::ImgWindowAdapter(const ImguiWindow* window) : ImgWindow() {
     this->window = window;
     Init(window->getWidth(), window->getHeight(), window->getX(), window->getY());
+    SetWindowTitle(window->getName());
 }
 
 void ImgWindowAdapter::BuildInterface() {

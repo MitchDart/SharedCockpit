@@ -24,4 +24,6 @@ void FirstWindow::onDraw() const {
     ImGui::Text("Want capture mouse: %i", io.WantCaptureMouse);
     ImGui::Text("Want capture keyboard: %i", io.WantCaptureKeyboard);
     ImGui::Text("Is any items active or hovered: %i", ImGui::IsAnyItemHovered());
+
+    ImGui::Text("This is some specific text just to make sure!");
 }

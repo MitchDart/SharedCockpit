@@ -38,6 +38,7 @@ class XPlaneEnvironment : public Environment
     public:
         //Constructor
         XPlaneEnvironment();
+        ~XPlaneEnvironment();
 
         /**
          * Main loop is called for each event loop run from main.cpp

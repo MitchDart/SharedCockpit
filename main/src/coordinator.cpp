@@ -27,7 +27,7 @@ Coordinator::Coordinator(Environment* environment) {
 
 void Coordinator::onStart() {
     //Create first window
-    const auto firstWindow = new FirstWindow("My first window", 200,200, 0,0);
+    const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200);
     this->environment->createWindow(firstWindow);
 }
 

@@ -38,4 +38,5 @@ void XPlaneEnvironment::createWindow(const ImguiWindow* window)
     const auto adapter = new ImgWindowAdapter(window);
     //Store window for now
     windows.push_back(adapter);
+    adapter->SetVisible(true);
 }

@@ -28,7 +28,7 @@
 class ImguiWindow {
     public:
         ImguiWindow(std::string name, int width, int height, int x, int y);
-        virtual ~ImguiWindow();
+        virtual ~ImguiWindow() {}
 
         //Inline setters and getters
         int getHeight() const { return height; }

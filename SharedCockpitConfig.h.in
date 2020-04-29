@@ -1,4 +1,3 @@
 // the configured options and settings for Tutorial
 #define SharedCockpit_VERSION_MAJOR @SharedCockpit_VERSION_MAJOR@
 #define SharedCockpit_VERSION_MINOR @SharedCockpit_VERSION_MINOR@
-#define APL 1
