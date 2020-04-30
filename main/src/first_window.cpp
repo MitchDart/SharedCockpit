@@ -26,4 +26,6 @@ void FirstWindow::onDraw() const {
     ImGui::Text("Is any items active or hovered: %i", ImGui::IsAnyItemHovered());
 
     ImGui::Text("This is some specific text just to make sure!");
+    ImGui::Text("Some ints %i", viewModel->getValue());
+    ImGui::Text("Some char %c", viewModel->getChar());
 }
