@@ -17,17 +17,20 @@
 */
 
 #include "coordinator.h"
+#include "viewmodel.h"
 
 //Include windows here so they dont bother other includes.
 #include "first_window.h"
 
-Coordinator::Coordinator(Environment* environment) {
+Coordinator::Coordinator(Environment* environment, rxcpp::schedulers::run_loop* rlp) {
     this->environment = environment;
+    this->rlp = rlp;
+    this->viewModel = new ViewModel::ViewModel(rlp);
 }
 
 void Coordinator::onStart() {
     //Create first window
-    const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200);
+    const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200, this->viewModel);
     this->environment->createWindow(firstWindow);
 }
 

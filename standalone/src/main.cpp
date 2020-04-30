@@ -449,9 +449,9 @@ int main(int, char**)
 
     // Setup environment
     auto environment = StandaloneEnvironment();
-
+    rxcpp::schedulers::run_loop r1;
     // Setup coordinator
-    auto coordinator = Coordinator(&environment);
+    auto coordinator = Coordinator(&environment, &r1);
     coordinator.onStart();
 
     // Main loop
@@ -481,6 +481,7 @@ int main(int, char**)
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
+        r1.dispatch();
         environment.mainLoop();
 
         // Rendering
