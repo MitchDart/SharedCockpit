@@ -16,29 +16,19 @@
 * GNU General Public License for more details.
 */
 
-#include "coordinator.h"
-
-//Include windows here so they dont bother other includes.
-#include "first_window.h"
-#include "rxcpp/rx.hpp"
-namespace Rx {
-using namespace rxcpp;
-using namespace rxcpp::sources;
-using namespace rxcpp::operators;
-using namespace rxcpp::util;
-}
-using namespace Rx;
-
-Coordinator::Coordinator(Environment* environment) {
-    this->environment = environment;
-}
-
-void Coordinator::onStart() {
-    //Create first window
-    const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200);
-    this->environment->createWindow(firstWindow);
-}
-
-void Coordinator::onStop() {
-
-}
+#pragma once
+/** 
+ * DataRef class represents simulator data for reading and writing.
+ * 
+ * This is an abstracted representation of the C DataRef in XPlane. Each DataRef has a string ID which matches
+ * XPlanes reference to that DataRef. We also have an observable value of the data which is updated as that data
+ * changes. DataRefs are automatically subscribed to while this object lives. For now.
+ */ 
+template<class T>
+class DataRef {
+    private:
+    protected:
+    public:
+        virtual DataRef() = 0;
+        virtual ~DataRef() = 0;
+};
