@@ -32,6 +32,8 @@ class StandaloneEnvironment : public Environment
     private:
         //List of windows currently active
         std::vector<const ImguiWindow*> windows;
+        
+        rxcpp::subjects::subject<FlightDataRecordingFrame> flightRecorderSubject; 
     protected:
         //Override
         void createWindow(const ImguiWindow* window) override;
@@ -40,8 +42,13 @@ class StandaloneEnvironment : public Environment
         StandaloneEnvironment(rxcpp::schedulers::run_loop* rlp);
         ~StandaloneEnvironment();
 
+        const rxcpp::observable<FlightDataRecordingFrame> observeFlightDataRecording() override;
+
         /**
          * Main loop is called for each event loop run from main.cpp
          */
         void mainLoop();
+
+        void onLaunch() override;
+        void onExit() override;
 };

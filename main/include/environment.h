@@ -19,6 +19,8 @@
 #pragma once
 #include "imgui_window.h"
 #include "rx.hpp"
+#include <string>
+#include "frames.h"
 
 /** 
  * Abstract environment representing a runtime environment
@@ -42,6 +44,20 @@ class Environment {
         * @param window Window object to create
         */
         virtual void createWindow(const ImguiWindow* window) = 0;
+
+        /** 
+        * Observes a float dataref
+        *
+        * This will create an abstract dataref subscription
+        * 
+        * @param dataRef DataRef object to subscribe to
+        */
+        virtual const rxcpp::observable<FlightDataRecordingFrame> observeFlightDataRecording() = 0;
+
+
+        virtual void onLaunch() = 0;
+        virtual void onExit() = 0;
+
         rxcpp::schedulers::run_loop* rlp;
     private:
 };

@@ -17,6 +17,8 @@
 */
 
 #include "standalone_environment.h"
+#include <iostream>
+#include <thread>
 
 StandaloneEnvironment::StandaloneEnvironment(rxcpp::schedulers::run_loop *rlp)
     : Environment(rlp) {
@@ -43,6 +45,10 @@ void StandaloneEnvironment::createWindow(const ImguiWindow* window)
     windows.push_back(window);
 }
 
+const rxcpp::observable<FlightDataRecordingFrame> StandaloneEnvironment::observeFlightDataRecording() {
+	return this->flightRecorderSubject.get_observable().subscribe_on(rxcpp::observe_on_run_loop(*(this->rlp))).publish().ref_count();
+}
+static float count = 0.0f;
 void StandaloneEnvironment::mainLoop()
 {
     for(const auto &window : windows) {
@@ -57,4 +63,14 @@ void StandaloneEnvironment::mainLoop()
         window->onDraw();
         ImGui::End();
     }
+
+    FlightDataRecordingFrame frame;
+    frame.value = count++;
+    flightRecorderSubject.get_subscriber().on_next(frame);
+}
+
+void StandaloneEnvironment::onLaunch() {
+}
+void StandaloneEnvironment::onExit() {
+    flightRecorderSubject.get_subscriber().on_completed();
 }

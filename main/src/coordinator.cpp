@@ -21,7 +21,12 @@
 
 //Include windows here so they dont bother other includes.
 #include "first_window.h"
-#include "rx.hpp"
+#include "recording_window.h"
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <fstream>
+
 
 Coordinator::Coordinator(Environment* environment) {
     this->environment = environment;
@@ -32,8 +37,37 @@ void Coordinator::onStart() {
     //Create first window
     const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200, this->viewModel);
     this->environment->createWindow(firstWindow);
+
+	this->startRecording();
 }
 
 void Coordinator::onStop() {
+
+}
+
+void Coordinator::startRecording() {
+
+	//Setup recording window to show recording
+	const auto recordingWindow = new RecordingWindow();
+    this->environment->createWindow(recordingWindow);
+
+	ofstream* csvFile = new ofstream();
+  	csvFile->open ("recording.csv");
+  	*csvFile << "Value";
+
+	const auto flightDataRecording = this->environment->observeFlightDataRecording();
+	auto workThread = observe_on_new_thread();
+	flightDataRecording
+		.observe_on(workThread)
+		.subscribe([recordingWindow, csvFile](FlightDataRecordingFrame value) {
+				recordingWindow->setFrameValue(value.value);
+				*csvFile << value.value << std::endl;
+			}, [recordingWindow,csvFile]() {
+				(*csvFile).close();
+				delete csvFile;
+			});
+}
+
+void Coordinator::stopRecording() {
 
 }

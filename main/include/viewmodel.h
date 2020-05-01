@@ -1,7 +1,7 @@
 
-#include "rx.hpp"
-
 #pragma once
+
+#include "rx.hpp"
 
 using namespace std;
 using namespace std::chrono;

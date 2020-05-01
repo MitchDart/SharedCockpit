@@ -450,6 +450,7 @@ int main(int, char**)
     // Setup environment
     rxcpp::schedulers::run_loop mainRunLoop;
     auto environment = StandaloneEnvironment(&mainRunLoop);
+    environment.onLaunch();
     // Setup coordinator
     auto coordinator = Coordinator(&environment);
     coordinator.onStart();
@@ -492,6 +493,7 @@ int main(int, char**)
     }
 
     coordinator.onStop();
+    environment.onExit();
 
     // Cleanup
     err = vkDeviceWaitIdle(g_Device);

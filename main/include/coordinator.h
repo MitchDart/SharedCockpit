@@ -33,6 +33,18 @@ class Coordinator {
     private:
         Environment* environment;
         ViewModel* viewModel;
+
+		/**
+		* Start recording flight data into a file
+		* 
+		*/
+		void startRecording();
+
+		/**
+		* Stop recording flight data to a file
+		*
+		*/
+		void stopRecording();
     protected:
     public:
         /** 
