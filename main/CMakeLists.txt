@@ -15,6 +15,7 @@ include_directories(/usr/local/include)
 file(GLOB sources src/*.cpp)
 
 #RxCPP
-find_package(RxCpp CONFIG REQUIRED)
+find_package(rxcpp CONFIG REQUIRED)
 
 add_library(main ${sources})
+target_link_libraries(main rxcpp)

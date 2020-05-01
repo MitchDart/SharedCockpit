@@ -32,7 +32,7 @@
 class Coordinator {
     private:
         Environment* environment;
-        ViewModel::ViewModel* viewModel;
+        ViewModel* viewModel;
     protected:
     public:
         /** 

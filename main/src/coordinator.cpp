@@ -21,18 +21,11 @@
 
 //Include windows here so they dont bother other includes.
 #include "first_window.h"
-#include "rxcpp/rx.hpp"
-namespace Rx {
-using namespace rxcpp;
-using namespace rxcpp::sources;
-using namespace rxcpp::operators;
-using namespace rxcpp::util;
-}
-using namespace Rx;
+#include "rx.hpp"
 
 Coordinator::Coordinator(Environment* environment) {
     this->environment = environment;
-    this->viewModel = new ViewModel::ViewModel(environment->rlp);
+    this->viewModel = new ViewModel(environment->rlp);
 }
 
 void Coordinator::onStart() {

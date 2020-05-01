@@ -1,6 +1,6 @@
 #include "viewmodel.h"
 
-ViewModel::ViewModel::ViewModel(rxcpp::schedulers::run_loop* rlp) {
+ViewModel::ViewModel(rxcpp::schedulers::run_loop* rlp) {
   this->runLoop = rlp;
   auto mainThread = observe_on_run_loop(*(this->runLoop));
   auto workThread = observe_on_new_thread();

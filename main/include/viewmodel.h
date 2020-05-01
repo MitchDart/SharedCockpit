@@ -1,5 +1,5 @@
 
-#include "rxcpp/rx.hpp"
+#include "rx.hpp"
 
 #pragma once
 
@@ -15,7 +15,6 @@ using namespace rxcpp::util;
 using namespace Rx;
 
 
-namespace ViewModel {
 class ViewModel {
  public:
   ViewModel(rxcpp::schedulers::run_loop* rlp);
@@ -28,4 +27,3 @@ class ViewModel {
   int value = 0;
   char valOfChar = '^';
 };
-}  // namespace ViewModel

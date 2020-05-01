@@ -30,11 +30,11 @@
 class FirstWindow : public ImguiWindow
 {
     private:
-        ViewModel::ViewModel* viewModel;
+        ViewModel* viewModel;
     protected:
         void onDraw() const override;
     public:
-        FirstWindow(std::string name, int width, int height, int x, int y, ViewModel::ViewModel* viewModel) : ImguiWindow(name, width, height, x, y) {
+        FirstWindow(std::string name, int width, int height, int x, int y, ViewModel* viewModel) : ImguiWindow(name, width, height, x, y) {
             this->viewModel = viewModel;
         };
         ~FirstWindow() override {};
