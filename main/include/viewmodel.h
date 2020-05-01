@@ -1,8 +1,19 @@
 
-#include "rx.hpp"
+#include "rxcpp/rx.hpp"
 
-#ifndef VIEWMODEL_H
-#define VIEWMODEL_H
+#pragma once
+
+using namespace std;
+using namespace std::chrono;
+
+namespace Rx {
+using namespace rxcpp;
+using namespace rxcpp::sources;
+using namespace rxcpp::operators;
+using namespace rxcpp::util;
+}  // namespace Rx
+using namespace Rx;
+
 
 namespace ViewModel {
 class ViewModel {
@@ -18,5 +29,3 @@ class ViewModel {
   char valOfChar = '^';
 };
 }  // namespace ViewModel
-
-#endif  // !VIEWMODEL_H

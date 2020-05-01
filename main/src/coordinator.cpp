@@ -21,6 +21,14 @@
 
 //Include windows here so they dont bother other includes.
 #include "first_window.h"
+#include "rxcpp/rx.hpp"
+namespace Rx {
+using namespace rxcpp;
+using namespace rxcpp::sources;
+using namespace rxcpp::operators;
+using namespace rxcpp::util;
+}
+using namespace Rx;
 
 Coordinator::Coordinator(Environment* environment) {
     this->environment = environment;

@@ -17,25 +17,18 @@
 */
 
 #pragma once
-
-#include "imgui_window.h"
-#include "imgui.h"
-#include "viewmodel.h"
-
 /** 
- * First demo window
+ * DataRef class represents simulator data for reading and writing.
  * 
- * 
+ * This is an abstracted representation of the C DataRef in XPlane. Each DataRef has a string ID which matches
+ * XPlanes reference to that DataRef. We also have an observable value of the data which is updated as that data
+ * changes. DataRefs are automatically subscribed to while this object lives. For now.
  */ 
-class FirstWindow : public ImguiWindow
-{
+template<class T>
+class DataRef {
     private:
-        ViewModel::ViewModel* viewModel;
     protected:
-        void onDraw() const override;
     public:
-        FirstWindow(std::string name, int width, int height, int x, int y, ViewModel::ViewModel* viewModel) : ImguiWindow(name, width, height, x, y) {
-            this->viewModel = viewModel;
-        };
-        ~FirstWindow() override {};
+        virtual DataRef() = 0;
+        virtual ~DataRef() = 0;
 };

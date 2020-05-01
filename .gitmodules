@@ -7,3 +7,6 @@
 [submodule "libs/xplane_sdk"]
 	path = libs/xplane_sdk
 	url = https://github.com/leecbaker/xplane_sdk
+[submodule "libs/RxCpp"]
+	path = libs/RxCpp
+	url = https://github.com/ReactiveX/RxCpp.git

@@ -9,6 +9,12 @@ include_directories(${IMGUI_DIR} .)
 
 include_directories(include)
 
+#Need to include this for RxCPP. Not sure if this is needed for all OSs
+include_directories(/usr/local/include)
+
 file(GLOB sources src/*.cpp)
+
+#RxCPP
+find_package(RxCpp CONFIG REQUIRED)
 
 add_library(main ${sources})

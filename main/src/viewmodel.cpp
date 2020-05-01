@@ -1,16 +1,4 @@
-#include "viewmodel.h";
-
-#include "rx.hpp";
-using namespace std;
-using namespace std::chrono;
-
-namespace Rx {
-using namespace rxcpp;
-using namespace rxcpp::sources;
-using namespace rxcpp::operators;
-using namespace rxcpp::util;
-}  // namespace Rx
-using namespace Rx;
+#include "viewmodel.h"
 
 ViewModel::ViewModel::ViewModel(rxcpp::schedulers::run_loop* rlp) {
   this->runLoop = rlp;

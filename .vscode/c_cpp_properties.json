@@ -7,7 +7,8 @@
                 "${workspaceFolder}/standalone/include",
                 "${workspaceFolder}/main/include",
                 "${workspaceFolder}/xplane/include",
-                "${workspaceFolder}/libs/imgx/src"
+                "${workspaceFolder}/libs/imgx/src",
+                "/usr/local/include/"
             ],
             "defines": [],
             "macFrameworkPath": [
