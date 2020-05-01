@@ -448,10 +448,10 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Setup environment
-    auto environment = StandaloneEnvironment();
-    rxcpp::schedulers::run_loop r1;
+    rxcpp::schedulers::run_loop mainRunLoop;
+    auto environment = StandaloneEnvironment(&mainRunLoop);
     // Setup coordinator
-    auto coordinator = Coordinator(&environment, &r1);
+    auto coordinator = Coordinator(&environment);
     coordinator.onStart();
 
     // Main loop
@@ -481,7 +481,6 @@ int main(int, char**)
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
-        r1.dispatch();
         environment.mainLoop();
 
         // Rendering

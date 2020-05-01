@@ -22,10 +22,9 @@
 //Include windows here so they dont bother other includes.
 #include "first_window.h"
 
-Coordinator::Coordinator(Environment* environment, rxcpp::schedulers::run_loop* rlp) {
+Coordinator::Coordinator(Environment* environment) {
     this->environment = environment;
-    this->rlp = rlp;
-    this->viewModel = new ViewModel::ViewModel(rlp);
+    this->viewModel = new ViewModel::ViewModel(environment->rlp);
 }
 
 void Coordinator::onStart() {

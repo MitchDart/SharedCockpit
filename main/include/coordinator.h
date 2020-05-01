@@ -20,7 +20,7 @@
 
 #include "environment.h"
 #include "viewmodel.h"
-#include "rxcpp/rx.hpp"
+#include "rx.hpp"
 
 /** 
  * Coordinator is responsible for coordinating the flow of the application
@@ -32,7 +32,6 @@
 class Coordinator {
     private:
         Environment* environment;
-        rxcpp::schedulers::run_loop* rlp;
         ViewModel::ViewModel* viewModel;
     protected:
     public:
@@ -43,7 +42,7 @@ class Coordinator {
         *
         * @param environment Runtime environment
         */
-        Coordinator(Environment* environment, rxcpp::schedulers::run_loop* rlp);
+        Coordinator(Environment* environment);
 
         /**
          * Called when the runtime launches.

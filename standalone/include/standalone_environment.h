@@ -36,8 +36,8 @@ class StandaloneEnvironment : public Environment
         //Override
         void createWindow(const ImguiWindow* window) override;
     public:
-        //Constructor
-        StandaloneEnvironment();
+        // Constructor
+        StandaloneEnvironment(rxcpp::schedulers::run_loop* rlp);
         ~StandaloneEnvironment();
 
         /**

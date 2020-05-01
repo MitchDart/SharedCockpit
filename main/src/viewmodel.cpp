@@ -25,7 +25,7 @@ ViewModel::ViewModel::ViewModel(rxcpp::schedulers::run_loop* rlp) {
                     .subscribe_on(workThread);
 
   values.take(10)
-      .observe_on(mainThread)
+      .observe_on(workThread)
       .subscribe(
           [=](tuple<char, int> v) { 
               (this->valOfChar) = get<0>(v); 

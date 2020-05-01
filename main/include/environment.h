@@ -18,6 +18,7 @@
 
 #pragma once
 #include "imgui_window.h"
+#include "rx.hpp"
 
 /** 
  * Abstract environment representing a runtime environment
@@ -30,6 +31,8 @@
 class Environment {
     protected:
     public:
+        Environment(rxcpp::schedulers::run_loop* rlp) { this->rlp = rlp; }
+
         /** 
         * Creates a ImguiWindow to display
         *
@@ -39,5 +42,6 @@ class Environment {
         * @param window Window object to create
         */
         virtual void createWindow(const ImguiWindow* window) = 0;
+        rxcpp::schedulers::run_loop* rlp;
     private:
 };

@@ -18,8 +18,8 @@
 
 #include "standalone_environment.h"
 
-StandaloneEnvironment::StandaloneEnvironment()
-{
+StandaloneEnvironment::StandaloneEnvironment(rxcpp::schedulers::run_loop *rlp)
+    : Environment(rlp) {
     
 }
 
@@ -53,6 +53,7 @@ void StandaloneEnvironment::mainLoop()
         ImGui::SetNextWindowPos(position, ImGuiCond_Once);
         ImGui::SetNextWindowSize(size, ImGuiCond_Once);
         ImGui::Begin(window->getName().c_str());
+        this->rlp->dispatch();
         window->onDraw();
         ImGui::End();
     }
