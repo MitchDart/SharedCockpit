@@ -17,24 +17,3 @@
 */
 
 #pragma once
-#include "rx.hpp"
-
-/** 
- * DataRef class represents simulator data for reading and writing.
- * 
- * This is an abstracted representation of the C DataRef in XPlane. Each DataRef has a string ID which matches
- * XPlanes reference to that DataRef. We also have an observable value of the data which is updated as that data
- * changes. DataRefs are automatically subscribed to while this object lives. For now.
- */ 
-template<class T>
-class DataRef {
-    private:
-        rxcpp::subjects::subject<T> flightRecorderSubject; 
-        std::string ref;
-    protected:
-    public:
-        DataRef(std::string ref);
-        ~DataRef();
-
-        rxcpp::observable<T> toObservable();
-};

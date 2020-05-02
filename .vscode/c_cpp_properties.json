@@ -7,7 +7,7 @@
                 "${workspaceFolder}/main/include",
                 "${workspaceFolder}/xplane/include",
                 "${workspaceFolder}/libs/imgx/src",
-                "/usr/local/include/",
+                "/usr/local/include/rxcpp",
                 "C:/Users/mitch/Code/vcpkg/installed/x64-windows/include/rxcpp"
             ],
             "defines": [],

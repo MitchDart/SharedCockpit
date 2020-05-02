@@ -45,9 +45,10 @@ void StandaloneEnvironment::createWindow(const ImguiWindow* window)
     windows.push_back(window);
 }
 
-const rxcpp::observable<FlightDataRecordingFrame> StandaloneEnvironment::observeFlightDataRecording() {
-	return this->flightRecorderSubject.get_observable().subscribe_on(rxcpp::observe_on_run_loop(*(this->rlp))).publish().ref_count();
+const rxcpp::observable<> StandaloneEnvironment::observeDataRef(DataRef* dataref) {
+	return dataref->toObservable().subscribe_on(rxcpp::observe_on_run_loop(*(this->rlp))).publish().ref_count();
 }
+
 static float count = 0.0f;
 void StandaloneEnvironment::mainLoop()
 {
