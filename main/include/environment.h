@@ -21,6 +21,7 @@
 #include "rx.hpp"
 #include <string>
 #include "frames.h"
+#include "dataref.h"
 
 /** 
  * Abstract environment representing a runtime environment
@@ -46,14 +47,13 @@ class Environment {
         virtual void createWindow(const ImguiWindow* window) = 0;
 
         /** 
-        * Observes a float dataref
+        * Subscribe to a dataref
         *
         * This will create an abstract dataref subscription
         * 
         * @param dataRef DataRef object to subscribe to
         */
-        virtual const rxcpp::observable<FlightDataRecordingFrame> observeFlightDataRecording() = 0;
-
+        virtual void subscribeToDataRef(const DataRef* dataRef) = 0;
 
         virtual void onLaunch() = 0;
         virtual void onExit() = 0;

@@ -16,17 +16,24 @@
 * GNU General Public License for more details.
 */
 
-#include "dataref.h" 
- 
-template<class T>
-DataRef::DataRef(std::string ref) {
+#pragma once
 
-}
+#include "dataref.h"
 
-DataRef::~DataRef() {
-
-}
-
-rxcpp::observable<T> DataRef::toObservable() {
-    
-}
+/** 
+ * Oneliner description of class.
+ * 
+ * Paragraph explaining how the class is used and what its purpose is in more detail.
+ */ 
+class FloatDataRef : public DataRef {
+    private:
+        rxcpp::subjects::subject<float> subject;
+    protected:
+    public:
+        FloatDataRef(std::string ref) : DataRef(ref, DATA_REF_FLOAT) {}
+        ~FloatDataRef() override;
+        void complete();
+        void update(float value) const;
+        void error(std::string error);
+        rxcpp::observable<float> toObservable();
+};

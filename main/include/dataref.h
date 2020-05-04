@@ -19,6 +19,8 @@
 #pragma once
 #include "rx.hpp"
 
+enum DataRefType { DATA_REF_FLOAT };
+
 /** 
  * DataRef class represents simulator data for reading and writing.
  * 
@@ -26,15 +28,14 @@
  * XPlanes reference to that DataRef. We also have an observable value of the data which is updated as that data
  * changes. DataRefs are automatically subscribed to while this object lives. For now.
  */ 
-template<class T>
 class DataRef {
     private:
-        rxcpp::subjects::subject<T> flightRecorderSubject; 
         std::string ref;
     protected:
     public:
-        DataRef(std::string ref);
-        ~DataRef();
-
-        rxcpp::observable<T> toObservable();
-};
+        DataRef(std::string ref, DataRefType dataRefType) { this->dataRefType = dataRefType; this->ref = ref; }
+        DataRefType dataRefType;
+        virtual ~DataRef() {}
+        std::string getRef() { return ref; }
+        bool operator==(const DataRef& comp) const { return this->ref == comp.ref; }
+}; 

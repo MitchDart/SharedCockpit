@@ -19,6 +19,8 @@
 #include "standalone_environment.h"
 #include <iostream>
 #include <thread>
+#include <algorithm>
+#include <type_traits>
 
 StandaloneEnvironment::StandaloneEnvironment(rxcpp::schedulers::run_loop *rlp)
     : Environment(rlp) {
@@ -45,8 +47,15 @@ void StandaloneEnvironment::createWindow(const ImguiWindow* window)
     windows.push_back(window);
 }
 
-const rxcpp::observable<> StandaloneEnvironment::observeDataRef(DataRef* dataref) {
-	return dataref->toObservable().subscribe_on(rxcpp::observe_on_run_loop(*(this->rlp))).publish().ref_count();
+void StandaloneEnvironment::subscribeToDataRef(const DataRef* dataRef) {
+
+    //If the dataref is already inside the list then dont bother checking again
+    for(int i = 0; i < this->dataRefs.size(); i++) {
+        if(*this->dataRefs[i] == *dataRef)
+            return;
+    }
+        
+    this->dataRefs.push_back(dataRef);
 }
 
 static float count = 0.0f;
@@ -65,13 +74,20 @@ void StandaloneEnvironment::mainLoop()
         ImGui::End();
     }
 
-    FlightDataRecordingFrame frame;
-    frame.value = count++;
-    flightRecorderSubject.get_subscriber().on_next(frame);
+    //Figure out what type of data ref it is
+    for(int i = 0; i < this->dataRefs.size(); i++) {
+        const DataRef* currentRef = this->dataRefs[i];
+        switch(currentRef->dataRefType) {
+            case DataRefType::DATA_REF_FLOAT : {
+                const FloatDataRef* floatDataRef = dynamic_cast<const FloatDataRef*>(currentRef);
+                floatDataRef->update(count++);
+                break;
+            }
+        }
+    }
 }
 
 void StandaloneEnvironment::onLaunch() {
 }
 void StandaloneEnvironment::onExit() {
-    flightRecorderSubject.get_subscriber().on_completed();
 }

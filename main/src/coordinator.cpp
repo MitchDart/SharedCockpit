@@ -26,6 +26,7 @@
 #include <thread>
 #include <chrono>
 #include <fstream>
+#include "float_dataref.h"
 
 
 Coordinator::Coordinator(Environment* environment) {
@@ -53,15 +54,17 @@ void Coordinator::startRecording() {
 
 	ofstream* csvFile = new ofstream();
   	csvFile->open ("recording.csv");
-  	*csvFile << "Value";
 
-	const auto flightDataRecording = this->environment->observeFlightDataRecording();
+	//Create a dataref
+	const auto dataRef = new FloatDataRef("my_data_ref");
+	environment->subscribeToDataRef(dataRef);
 	auto workThread = observe_on_new_thread();
-	flightDataRecording
+	*csvFile << dataRef->getRef() << std::endl;
+	dataRef->toObservable()
 		.observe_on(workThread)
-		.subscribe([recordingWindow, csvFile](FlightDataRecordingFrame value) {
-				recordingWindow->setFrameValue(value.value);
-				*csvFile << value.value << std::endl;
+		.subscribe([recordingWindow, csvFile](float value) {
+				recordingWindow->setFrameValue(value);
+				*csvFile << value << std::endl;
 			}, [recordingWindow,csvFile]() {
 				(*csvFile).close();
 				delete csvFile;

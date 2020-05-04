@@ -21,6 +21,8 @@
 #include <memory>
 #include "environment.h"
 #include "imgui.h"
+#include "dataref.h"
+#include "float_dataref.h"
 
 /** 
  * Standalone Environment
@@ -34,7 +36,7 @@ class StandaloneEnvironment : public Environment
         std::vector<const ImguiWindow*> windows;
         
         //List of datarefs 
-        rxcpp::subjects::subject<FlightDataRecordingFrame> flightRecorderSubject; 
+        std::vector<const DataRef*> dataRefs;
     protected:
         //Override
         void createWindow(const ImguiWindow* window) override;
@@ -43,7 +45,7 @@ class StandaloneEnvironment : public Environment
         StandaloneEnvironment(rxcpp::schedulers::run_loop* rlp);
         ~StandaloneEnvironment();
 
-        const rxcpp::observable<FlightDataRecordingFrame> observeFlightDataRecording() override;
+        void subscribeToDataRef(const DataRef* dataRef) override;
 
         /**
          * Main loop is called for each event loop run from main.cpp
