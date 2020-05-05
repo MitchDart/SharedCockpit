@@ -18,22 +18,20 @@
 
 #pragma once
 
-#include "dataref.h"
+#include "environment.h"
 
-/** 
- * Oneliner description of class.
- * 
- * Paragraph explaining how the class is used and what its purpose is in more detail.
- */ 
-class FloatDataRef : public DataRef {
+/**
+ * Flight recorder responsibile for recording and replaying flight recordings
+ *
+ * Uses environment to record specific DataRefs into a csv file for later replaying.
+ * When enabled, it creates a recorder window where the user is able to specify datarefs
+ * and begin recording. 
+ */
+class FlightRecorder {
     private:
-        rxcpp::subjects::subject<float> subject;
     protected:
     public:
-        FloatDataRef(std::string ref) : DataRef(ref, DATA_REF_FLOAT) {}
-        ~FloatDataRef() override;
-        void complete();
-        void update(float value) const;
-        void error(std::string error);
-        rxcpp::observable<float> toObservable();
+        FlightRecorder(Environment* environment);
+        void enableFlightRecorderWindow();
+        void disableFlightRecorderWindow();
 };

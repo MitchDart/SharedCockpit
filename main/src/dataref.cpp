@@ -16,24 +16,37 @@
 * GNU General Public License for more details.
 */
 
-#include "float_dataref.h"
+#include "dataref.h"
 #include <exception>
 
-FloatDataRef::~FloatDataRef() {}
+DataRef::DataRef(std::string ref, DataRefType dataRefType) { 
+    this->dataRefType = dataRefType; this->ref = ref; 
+}
 
-void FloatDataRef::complete() {
+DataRefType DataRef::getDataRefType() const {
+    return dataRefType;
+}
+
+std::string DataRef::getRef() const {
+    return ref;
+}
+
+void DataRef::complete() {
     this->subject.get_subscriber().on_completed();
 }
 
-void FloatDataRef::update(float value) const {
-    this->subject.get_subscriber().on_next(value);
+void DataRef::error(std::string error) {
+    this->subject.get_subscriber().on_error(std::make_exception_ptr(std::runtime_error(error)));
 }
 
-void FloatDataRef::error(std::string error) {
-    this->subject.get_subscriber().on_error(rxcpp::util::make_error_ptr(rxcpp::empty_error(error)));
-}
-
-rxcpp::observable<float> FloatDataRef::toObservable() {
+rxcpp::observable<DataRefValue> DataRef::toObservable() {
     return this->subject.get_observable();
 }
 
+void DataRef::updateFloatValue(float value) const
+{
+    DataRefValue val;
+    val.floatData = value;
+    val.type = DATA_REF_FLOAT;
+    this->subject.get_subscriber().on_next(val);
+}

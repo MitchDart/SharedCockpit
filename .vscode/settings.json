@@ -100,5 +100,6 @@
         "stack": "cpp",
         "__memory": "cpp",
         "filesystem": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
 }

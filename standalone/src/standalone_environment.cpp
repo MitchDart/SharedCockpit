@@ -77,10 +77,9 @@ void StandaloneEnvironment::mainLoop()
     //Figure out what type of data ref it is
     for(int i = 0; i < this->dataRefs.size(); i++) {
         const DataRef* currentRef = this->dataRefs[i];
-        switch(currentRef->dataRefType) {
+        switch(currentRef->getDataRefType()) {
             case DataRefType::DATA_REF_FLOAT : {
-                const FloatDataRef* floatDataRef = dynamic_cast<const FloatDataRef*>(currentRef);
-                floatDataRef->update(count++);
+                currentRef->updateFloatValue(count++);
                 break;
             }
         }
