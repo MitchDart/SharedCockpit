@@ -21,7 +21,6 @@
 
 //Include windows here so they dont bother other includes.
 #include "first_window.h"
-#include "recording_window.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -39,81 +38,11 @@ void Coordinator::onStart() {
     const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200, this->viewModel);
     this->environment->createWindow(firstWindow);
 
-	this->startRecording();
+    this->flightRecorderController = new FlightRecorderController(this->environment);
+    this->flightRecorderController->enableFlightRecorderWindow();
 }
 
 void Coordinator::onStop() {
-
-}
-
-template <typename T>
-rxcpp::observable<std::shared_ptr<std::vector<T>>> zip_v(const std::vector<rxcpp::observable<T>>& observables) {
-	// map the first observable to convert values to a single-element vector
-	auto it = observables.cbegin();
-	rxcpp::observable<std::shared_ptr<std::vector<T>>> acc = it->map([](T t) {
-		return std::make_shared<std::vector<T>>(std::initializer_list<T>{ t });
-		});
-
-	// fold each observable into accumulator by zipping, and pushing back value
-	while (++it != observables.cend()) {
-		acc = acc.zip([](std::shared_ptr<std::vector<T>> acc, T next) {
-			acc->push_back(next);
-			return acc;
-			}, *it);
-	}
-	return acc;
-}
-
-void Coordinator::startRecording() {
-
-	//Setup recording window to show recording
-	const auto recordingWindow = new RecordingWindow();
-    this->environment->createWindow(recordingWindow);
-
-	ofstream* csvFile = new ofstream();
-  	csvFile->open ("recording.csv");
-
-	//Create a dataref1
-	const auto dataRef1 = new DataRef("data_ref_1",DATA_REF_FLOAT);
-	environment->subscribeToDataRef(dataRef1);
-
-	//Create a dataref2
-	const auto dataRef2 = new DataRef("data_ref_2", DATA_REF_FLOAT);
-	environment->subscribeToDataRef(dataRef2);
-
-	std::vector<rxcpp::observable<DataRefValue>> sources {
-		dataRef1->toObservable(),
-		dataRef2->toObservable()
-	};
-
-	*csvFile << dataRef1->getRef() << "," << dataRef2->getRef() << std::endl;
-
-	auto workThread = observe_on_new_thread();
-
-	zip_v(sources)
-		.observe_on(workThread)
-		.subscribe([recordingWindow, csvFile](std::shared_ptr<std::vector<DataRefValue>> value) {
-			for (int i = 0; i < (*value).size(); i++) {
-				auto& v = (*value)[i];
-
-				switch (v.type) {
-				case DataRefType::DATA_REF_FLOAT: {
-					*csvFile << v.floatData;
-					break;
-				}
-				}
-
-				if (i != (*value).size() - 1) {
-					*csvFile << ',';
-				}
-			}
-			*csvFile << std::endl;
-		}, [recordingWindow, csvFile]() {
-			(*csvFile).close();
-			delete csvFile;
-		});
-}
-
-void Coordinator::stopRecording() {
-
+    this->flightRecorderController->disableFlightRecorderWindow();
+    delete this->flightRecorderController;
 }

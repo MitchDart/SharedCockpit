@@ -18,7 +18,7 @@
 
 #include "first_window.h"
 
-void FirstWindow::onDraw() const {
+void FirstWindow::onDraw() {
     auto &io = ImGui::GetIO();
     ImGui::Text("ImGui screen size: width = %f  height = %f", io.DisplaySize.x, io.DisplaySize.y);
     ImGui::Text("Want capture mouse: %i", io.WantCaptureMouse);

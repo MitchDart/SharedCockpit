@@ -37,7 +37,7 @@ StandaloneEnvironment::~StandaloneEnvironment()
     windows.clear();
 }
 
-void StandaloneEnvironment::createWindow(const ImguiWindow* window)
+void StandaloneEnvironment::createWindow(ImguiWindow* window)
 {
     //If we already have this window then don't add it again.
     for(const auto &existingWindow : windows)
@@ -45,6 +45,12 @@ void StandaloneEnvironment::createWindow(const ImguiWindow* window)
             return;
 
     windows.push_back(window);
+}
+
+DataRef* StandaloneEnvironment::buildDataRef(std::string ref) {
+    //This part will usually first query the type from XPlane and then create the object
+    DataRef* dataRef = new DataRef(ref, DATA_REF_FLOAT);
+    return dataRef;
 }
 
 void StandaloneEnvironment::subscribeToDataRef(const DataRef* dataRef) {
@@ -58,10 +64,18 @@ void StandaloneEnvironment::subscribeToDataRef(const DataRef* dataRef) {
     this->dataRefs.push_back(dataRef);
 }
 
+void StandaloneEnvironment::unSubscribeToDataRef(const DataRef* dataRef) {
+
+    for (int i = 0; i < this->dataRefs.size(); i++) {
+        if (*this->dataRefs[i] == *dataRef)
+            this->dataRefs.erase(this->dataRefs.begin() + i);
+    }
+}
+
 static float count = 0.0f;
 void StandaloneEnvironment::mainLoop()
 {
-    for(const auto &window : windows) {
+    for(auto &window : windows) {
         //Setup sizes and position
         const auto size = ImVec2(window->getWidth(), window->getHeight());
         const auto position = ImVec2(window->getX(), window->getY());

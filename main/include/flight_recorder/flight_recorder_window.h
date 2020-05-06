@@ -20,22 +20,32 @@
 
 #include "imgui_window.h"
 #include "imgui.h"
-#include "viewmodel.h"
+#include <vector>
+#include <functional>
+#include "dataref.h"
 
 /** 
  * First demo window
  * 
  * 
  */ 
-class FirstWindow : public ImguiWindow
+class FlightRecorderWindow : public ImguiWindow
 {
     private:
-        ViewModel* viewModel;
+        float frameValue;
+        char dataRefInput[100] = "";
+
+        std::function< void(std::string) > onRefAddLambda;
+        std::function< void() > onRefClearLambda;
+        std::vector<DataRef*>* dataRefs;
     protected:
         void onDraw() override;
     public:
-        FirstWindow(std::string name, int width, int height, int x, int y, ViewModel* viewModel) : ImguiWindow(name, width, height, x, y) {
-            this->viewModel = viewModel;
-        };
-        ~FirstWindow() override {};
+        FlightRecorderWindow(std::vector<DataRef*>* dataRefs);
+        ~FlightRecorderWindow() override;
+
+        void setFrameValue(float frameValue);
+
+        void setOnAddRefListener(std::function< void(std::string) >&& lambda);
+        void setOnClearListener(std::function< void() >&& lambda);
 };

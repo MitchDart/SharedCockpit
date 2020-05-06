@@ -44,7 +44,16 @@ class Environment {
         * 
         * @param window Window object to create
         */
-        virtual void createWindow(const ImguiWindow* window) = 0;
+        virtual void createWindow(ImguiWindow* window) = 0;
+
+        /**
+        * Build a DataRef object
+        *
+        * This will create a DataRef object which needs to be destroyed when no longer needed
+        *
+        * @param dataRef DataRef object to subscribe to
+        */
+        virtual DataRef* buildDataRef(std::string ref) = 0;
 
         /** 
         * Subscribe to a dataref
@@ -54,6 +63,9 @@ class Environment {
         * @param dataRef DataRef object to subscribe to
         */
         virtual void subscribeToDataRef(const DataRef* dataRef) = 0;
+
+
+        virtual void unSubscribeToDataRef(const DataRef* dataRef) = 0;
 
         virtual void onLaunch() = 0;
         virtual void onExit() = 0;

@@ -12,10 +12,15 @@ include_directories(include)
 #Need to include this for RxCPP. Not sure if this is needed for all OSs
 include_directories(/usr/local/include)
 
-file(GLOB sources src/*.cpp)
-
 #RxCPP
 find_package(rxcpp CONFIG REQUIRED)
 
-add_library(main ${sources})
+add_library(main 
+	"src/coordinator.cpp"
+	"src/dataref.cpp"
+	"src/first_window.cpp"
+	"src/imgui_window.cpp"
+	"src/flight_recorder/flight_recorder_window.cpp" 
+	"src/viewmodel.cpp"
+	"src/flight_recorder/flight_recorder_controller.cpp" )
 target_link_libraries(main rxcpp)

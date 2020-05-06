@@ -32,19 +32,24 @@ class StandaloneEnvironment : public Environment
 {
     private:
         //List of windows currently active
-        std::vector<const ImguiWindow*> windows;
+        std::vector<ImguiWindow*> windows;
         
         //List of datarefs 
         std::vector<const DataRef*> dataRefs;
     protected:
         //Override
-        void createWindow(const ImguiWindow* window) override;
+        void createWindow(ImguiWindow* window) override;
     public:
         // Constructor
         StandaloneEnvironment(rxcpp::schedulers::run_loop* rlp);
         ~StandaloneEnvironment();
 
+        DataRef* buildDataRef(std::string ref) override;
+
         void subscribeToDataRef(const DataRef* dataRef) override;
+
+        void unSubscribeToDataRef(const DataRef* dataRef) override;
+
 
         /**
          * Main loop is called for each event loop run from main.cpp

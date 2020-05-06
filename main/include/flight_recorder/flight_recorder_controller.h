@@ -19,6 +19,10 @@
 #pragma once
 
 #include "environment.h"
+#include "flight_recorder/flight_recorder_window.h"
+#include <vector>
+#include <string>
+#include "dataref.h"
 
 /**
  * Flight recorder responsibile for recording and replaying flight recordings
@@ -27,11 +31,17 @@
  * When enabled, it creates a recorder window where the user is able to specify datarefs
  * and begin recording. 
  */
-class FlightRecorder {
+class FlightRecorderController {
     private:
+        Environment* environment;
+        FlightRecorderWindow* window;
+        std::vector<DataRef*> dataRefs;
     protected:
     public:
-        FlightRecorder(Environment* environment);
+        void clearDataRefs();
+        void addDataRefToRecord(std::string ref);
+        FlightRecorderController(Environment* environment);
+        ~FlightRecorderController();
         void enableFlightRecorderWindow();
         void disableFlightRecorderWindow();
 };

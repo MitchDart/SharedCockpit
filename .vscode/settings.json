@@ -99,7 +99,8 @@
         "xutility": "cpp",
         "stack": "cpp",
         "__memory": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "concepts": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }

@@ -21,6 +21,7 @@
 #include "environment.h"
 #include "viewmodel.h"
 #include "rx.hpp"
+#include "flight_recorder/flight_recorder_controller.h"
 
 /** 
  * Coordinator is responsible for coordinating the flow of the application
@@ -34,17 +35,8 @@ class Coordinator {
         Environment* environment;
         ViewModel* viewModel;
 
-		/**
-		* Start recording flight data into a file
-		* 
-		*/
-		void startRecording();
-
-		/**
-		* Stop recording flight data to a file
-		*
-		*/
-		void stopRecording();
+        //Controllers
+        FlightRecorderController* flightRecorderController;
     protected:
     public:
         /** 

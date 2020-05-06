@@ -18,23 +18,25 @@
 
 #pragma once
 
-#include "imgui_window.h"
-#include "imgui.h"
+#include "rx.hpp"
 
-/** 
- * First demo window
- * 
- * 
- */ 
-class RecordingWindow : public ImguiWindow
+namespace Utils
 {
-    private:
-        float frameValue;
-    protected:
-        void onDraw() const override;
-    public:
-        RecordingWindow() : ImguiWindow("Flight Data Recording", 500, 500, 0, 0) {};
-        ~RecordingWindow() override {};
+	template <typename T>
+	inline rxcpp::observable<std::shared_ptr<std::vector<T>>> zip_v(const std::vector<rxcpp::observable<T>>& observables) {
+		// map the first observable to convert values to a single-element vector
+		auto it = observables.cbegin();
+		rxcpp::observable<std::shared_ptr<std::vector<T>>> acc = it->map([](T t) {
+			return std::make_shared<std::vector<T>>(std::initializer_list<T>{ t });
+			});
 
-        void setFrameValue(float frameValue);
-};
+		// fold each observable into accumulator by zipping, and pushing back value
+		while (++it != observables.cend()) {
+			acc = acc.zip([](std::shared_ptr<std::vector<T>> acc, T next) {
+				acc->push_back(next);
+				return acc;
+				}, *it);
+		}
+		return acc;
+	}
+}
