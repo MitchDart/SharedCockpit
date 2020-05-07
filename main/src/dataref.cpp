@@ -45,6 +45,10 @@ rxcpp::observable<DataRefValue> DataRef::toObservable() {
 
 void DataRef::updateFloatValue(float value) const
 {
+    //Don't shout if no one is listening
+    if (!this->subject.get_subscriber().is_subscribed())
+        return;
+
     DataRefValue val;
     val.floatData = value;
     val.type = DATA_REF_FLOAT;

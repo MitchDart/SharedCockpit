@@ -33,13 +33,20 @@
  */
 class FlightRecorderController {
     private:
+        rxcpp::composite_subscription recordingSubscription;
+        bool isRecording = false;
+        std::ofstream* csvFile;
+
         Environment* environment;
         FlightRecorderWindow* window;
         std::vector<DataRef*> dataRefs;
-    protected:
-    public:
+
+        void startRecording();
+        void stopRecording();
         void clearDataRefs();
         void addDataRefToRecord(std::string ref);
+    protected:
+    public:
         FlightRecorderController(Environment* environment);
         ~FlightRecorderController();
         void enableFlightRecorderWindow();

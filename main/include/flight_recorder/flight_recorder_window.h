@@ -37,15 +37,20 @@ class FlightRecorderWindow : public ImguiWindow
 
         std::function< void(std::string) > onRefAddLambda;
         std::function< void() > onRefClearLambda;
+        std::function< void()> onRecordLambda;
+        std::function< void()> onStopRecordLambda;
         std::vector<DataRef*>* dataRefs;
+        bool* isRecording;
     protected:
         void onDraw() override;
     public:
-        FlightRecorderWindow(std::vector<DataRef*>* dataRefs);
+        FlightRecorderWindow(std::vector<DataRef*>* dataRefs, bool* isRecording);
         ~FlightRecorderWindow() override;
 
         void setFrameValue(float frameValue);
 
         void setOnAddRefListener(std::function< void(std::string) >&& lambda);
         void setOnClearListener(std::function< void() >&& lambda);
+        void setOnRecordListener(std::function<void()>&& lambda);
+        void setOnStopRecordListener(std::function<void()>&& lambda);
 };

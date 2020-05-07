@@ -57,7 +57,7 @@ void StandaloneEnvironment::subscribeToDataRef(const DataRef* dataRef) {
 
     //If the dataref is already inside the list then dont bother checking again
     for(int i = 0; i < this->dataRefs.size(); i++) {
-        if(*this->dataRefs[i] == *dataRef)
+        if(this->dataRefs[i] == dataRef)
             return;
     }
         
@@ -65,7 +65,6 @@ void StandaloneEnvironment::subscribeToDataRef(const DataRef* dataRef) {
 }
 
 void StandaloneEnvironment::unSubscribeToDataRef(const DataRef* dataRef) {
-
     for (int i = 0; i < this->dataRefs.size(); i++) {
         if (*this->dataRefs[i] == *dataRef)
             this->dataRefs.erase(this->dataRefs.begin() + i);

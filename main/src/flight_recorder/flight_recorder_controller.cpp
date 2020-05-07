@@ -28,7 +28,7 @@
 
 FlightRecorderController::FlightRecorderController(Environment* environment) {
 	this->environment = environment;
-	this->window = new FlightRecorderWindow(&this->dataRefs);
+	this->window = new FlightRecorderWindow(&this->dataRefs, &this->isRecording);
 }
 
 void FlightRecorderController::enableFlightRecorderWindow() {
@@ -44,48 +44,13 @@ void FlightRecorderController::enableFlightRecorderWindow() {
 		this->clearDataRefs();
 	});
 
-	std::ofstream* csvFile = new std::ofstream();
-	csvFile->open("recording.csv");
+	this->window->setOnRecordListener([&]() {
+		this->startRecording();
+	});
 
-	//Create a dataref1
-	const auto dataRef1 = new DataRef("data_ref_1", DATA_REF_FLOAT);
-	//environment->subscribeToDataRef(dataRef1);
-
-	//Create a dataref2
-	const auto dataRef2 = new DataRef("data_ref_2", DATA_REF_FLOAT);
-	//environment->subscribeToDataRef(dataRef2);
-
-	std::vector<rxcpp::observable<DataRefValue>> sources{
-		dataRef1->toObservable(),
-		dataRef2->toObservable()
-	};
-
-	*csvFile << dataRef1->getRef() << "," << dataRef2->getRef() << std::endl;
-
-	auto workThread = rxcpp::observe_on_new_thread();
-
-	Utils::zip_v(sources)
-		.observe_on(workThread)
-		.subscribe([csvFile](std::shared_ptr<std::vector<DataRefValue>> value) {
-		for (int i = 0; i < (*value).size(); i++) {
-			auto& v = (*value)[i];
-
-			switch (v.type) {
-			case DataRefType::DATA_REF_FLOAT: {
-				*csvFile << v.floatData;
-				break;
-			}
-			}
-
-			if (i != (*value).size() - 1) {
-				*csvFile << ',';
-			}
-		}
-		*csvFile << std::endl;
-			}, [csvFile]() {
-				(*csvFile).close();
-				delete csvFile;
-			});
+	this->window->setOnStopRecordListener([&]() {
+		this->stopRecording();
+	});
 }
 
 void FlightRecorderController::disableFlightRecorderWindow() {
@@ -104,6 +69,82 @@ void FlightRecorderController::clearDataRefs() {
 	this->dataRefs.clear();
 }
 
+void FlightRecorderController::startRecording() {
+	if (this->isRecording == true)
+		return;
+
+	//Open recording file for editing
+	this->csvFile = new std::ofstream();
+	csvFile->open("recording.csv");
+
+	//Create a new thread
+	auto workThread = rxcpp::observe_on_new_thread();
+
+	//Copy dataRefs to readonly while we record
+	std::vector<rxcpp::observable<DataRefValue>> dataRefObservables;
+	bool first = true;
+	for (auto& dataRef : this->dataRefs) {
+		//Skip comma if first
+		if (!first)
+			*csvFile << ',';
+		first = false;
+
+		dataRefObservables.push_back(dataRef->toObservable());
+
+		//Subscribe
+		environment->subscribeToDataRef(dataRef);
+
+		//CSV Headers
+		*csvFile << dataRef->getRef();
+	}
+
+	*csvFile << std::endl;
+
+	this->recordingSubscription = Utils::zip_v(dataRefObservables)
+		.observe_on(workThread)
+		.subscribe([&](std::shared_ptr<std::vector<DataRefValue>> value) {
+			for (int i = 0; i < (*value).size(); i++) {
+				auto& v = (*value)[i];
+
+				switch (v.type) {
+				case DataRefType::DATA_REF_FLOAT: {
+					*csvFile << v.floatData;
+					break;
+				}
+				}
+
+				if (i != (*value).size() - 1) {
+					*csvFile << ',';
+				}
+			}
+			*csvFile << std::endl;
+		}, [&]() {
+			stopRecording();
+		});
+
+	this->isRecording = true;
+}
+
+void FlightRecorderController::stopRecording() {
+	if (this->isRecording == false)
+		return;
+
+	this->recordingSubscription.unsubscribe();
+
+	//Unsubscribe to dataRefs
+	for (auto dataRef : this->dataRefs) {
+		environment->unSubscribeToDataRef(dataRef);
+	}
+
+	(*csvFile).close();
+	delete csvFile;
+
+	this->isRecording = false;
+}
+
 FlightRecorderController::~FlightRecorderController() {
+	if (this->isRecording == true)
+		stopRecording();
+
 	this->clearDataRefs();
 }

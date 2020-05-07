@@ -18,30 +18,42 @@
 
 #include "flight_recorder/flight_recorder_window.h"
 
-FlightRecorderWindow::FlightRecorderWindow(std::vector<DataRef*>* dataRef) : ImguiWindow("Flight Data Recording", 500, 500, 0, 0) {
+FlightRecorderWindow::FlightRecorderWindow(std::vector<DataRef*>* dataRef, bool* isRecording) : ImguiWindow("Flight Data Recording", 500, 500, 0, 0) {
     this->onRefAddLambda = [](std::string ref) {};
     this->dataRefs = dataRef;
+    this->isRecording = isRecording;
 }   
 
 FlightRecorderWindow::~FlightRecorderWindow() {
 }
 
 void FlightRecorderWindow::onDraw() {
-    ImGui::Text("Add DataRefs to record.");
-    ImGui::InputTextWithHint("", "sim/flightmodel/position/local_x", this->dataRefInput, IM_ARRAYSIZE(this->dataRefInput));
-    if (ImGui::Button("Add DataRef")) {
-        std::string ref(dataRefInput);
-        onRefAddLambda(ref);
+    if (!*(this->isRecording)) {
+        ImGui::Text("Add DataRefs to record.");
+        ImGui::InputTextWithHint("", "sim/flightmodel/position/local_x", this->dataRefInput, IM_ARRAYSIZE(this->dataRefInput));
+        if (ImGui::Button("Add DataRef")) {
+            std::string ref(dataRefInput);
+            onRefAddLambda(ref);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Clear")) {
+            onRefClearLambda();
+        }
+        ImGui::ListBoxHeader("");
+        for (int i = 0; i < this->dataRefs->size(); i++) {
+            ImGui::Selectable((*this->dataRefs)[i]->getRef().c_str(), false, ImGuiSelectableFlags_Disabled);
+        }
+        ImGui::ListBoxFooter();
+        if (ImGui::Button("Record")) {
+            onRecordLambda();
+        }
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Clear")) {
-        onRefClearLambda();
+    else {
+        ImGui::Text("Recording...");
+        if (ImGui::Button("Stop recording")) {
+            onStopRecordLambda();
+        }
     }
-    ImGui::ListBoxHeader("");
-    for (int i = 0; i < this->dataRefs->size(); i++) {
-        ImGui::Selectable((*this->dataRefs)[i]->getRef().c_str(), false, ImGuiSelectableFlags_Disabled);
-    }
-    ImGui::ListBoxFooter();
 }
 
 void FlightRecorderWindow::setFrameValue(float frameValue) {
@@ -55,4 +67,14 @@ void FlightRecorderWindow::setOnAddRefListener(std::function< void(std::string) 
 
 void FlightRecorderWindow::setOnClearListener(std::function< void() >&& lambda) {
     this->onRefClearLambda = lambda;
+}
+
+
+void FlightRecorderWindow::setOnRecordListener(std::function<void()>&& lambda) {
+    this->onRecordLambda = lambda;
+}
+
+
+void FlightRecorderWindow::setOnStopRecordListener(std::function<void()>&& lambda) {
+    this->onStopRecordLambda = lambda;
 }
