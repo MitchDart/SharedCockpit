@@ -29,7 +29,7 @@ class ImgWindowAdapter : public ImgWindow
 {
     private:
         //Window ojbect to adapt
-        const ImguiWindow* window;
+        ImguiWindow* window;
     protected:
         //Override
         void BuildInterface() override;
@@ -39,7 +39,7 @@ class ImgWindowAdapter : public ImgWindow
         *
         * @param window ImgWindow object to adapt to generic ImguiWindow object
         */
-        ImgWindowAdapter(const ImguiWindow* window);
+        ImgWindowAdapter(ImguiWindow* window);
 
         /**
          * Desconstruct delete window which we holding we we are deleted

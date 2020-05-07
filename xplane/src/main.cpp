@@ -19,8 +19,14 @@
 #endif
 
 //Keep globals here
-Environment* environment;
-Coordinator* coordinator;
+XPlaneEnvironment* environment;
+Coordinator* mainCoordinator;
+
+static float	FlightLoopCallback(
+                                   float                inElapsedSinceLastCall,    
+                                   float                inElapsedTimeSinceLastFlightLoop,    
+                                   int                  inCounter,    
+                                   void *               inRefcon); 
 
 PLUGIN_API int XPluginStart(
 							char *		outName,
@@ -31,18 +37,39 @@ PLUGIN_API int XPluginStart(
 	strcpy(outSig, "dart.SharedCockpit");
 	strcpy(outDesc, "Multiplayer SharedCockpit plugin allows you to fly with your friends!");
 	
+
 	environment = new XPlaneEnvironment();
-	coordinator = new Coordinator(environment);
-	coordinator->onStart();
+	mainCoordinator = new Coordinator(environment);
+	mainCoordinator->onStart();
+
+	XPLMRegisterFlightLoopCallback(		
+			FlightLoopCallback,	/* Callback */
+			-1.0,					/* Interval */
+			NULL);	
 
 	return 1;
 }
 
 PLUGIN_API void	XPluginStop(void) {
-	delete coordinator;
+	mainCoordinator->onStop();
+
+	delete mainCoordinator;
 	delete environment;
  }
 
-PLUGIN_API void XPluginDisable(void) { }
-PLUGIN_API int  XPluginEnable(void)  { return 1; }
+PLUGIN_API void XPluginDisable(void) {
+}
+PLUGIN_API int  XPluginEnable(void)  {
+	return 1; 
+}
 PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFrom, int inMsg, void * inParam) { }
+
+float	FlightLoopCallback(
+                                   float                inElapsedSinceLastCall,    
+                                   float                inElapsedTimeSinceLastFlightLoop,    
+                                   int                  inCounter,    
+                                   void *               inRefcon)
+{
+	environment->mainLoop();
+	return -1;
+}                                  

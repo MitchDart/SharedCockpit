@@ -19,7 +19,6 @@
 #pragma once
 
 #include "environment.h"
-#include "viewmodel.h"
 #include "rx.hpp"
 #include "flight_recorder/flight_recorder_controller.h"
 
@@ -33,7 +32,6 @@
 class Coordinator {
     private:
         Environment* environment;
-        ViewModel* viewModel;
 
         //Controllers
         FlightRecorderController* flightRecorderController;

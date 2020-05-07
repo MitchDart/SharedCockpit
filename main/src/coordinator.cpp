@@ -17,7 +17,6 @@
 */
 
 #include "coordinator.h"
-#include "viewmodel.h"
 
 //Include windows here so they dont bother other includes.
 #include "first_window.h"
@@ -30,12 +29,11 @@
 
 Coordinator::Coordinator(Environment* environment) {
     this->environment = environment;
-    this->viewModel = new ViewModel(environment->rlp);
 }
 
 void Coordinator::onStart() {
     //Create first window
-    const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200, this->viewModel);
+    const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200);
     this->environment->createWindow(firstWindow);
 
     this->flightRecorderController = new FlightRecorderController(this->environment);

@@ -21,6 +21,5 @@ add_library(main
 	"src/first_window.cpp"
 	"src/imgui_window.cpp"
 	"src/flight_recorder/flight_recorder_window.cpp" 
-	"src/viewmodel.cpp"
 	"src/flight_recorder/flight_recorder_controller.cpp" )
 target_link_libraries(main rxcpp)
