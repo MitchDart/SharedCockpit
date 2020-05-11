@@ -19,7 +19,9 @@
 #pragma once
 
 #include "environment.h"
+#include "chat_server_interface.h"
 #include "viewmodel.h"
+#include "chat_view_model.h"
 #include "rx.hpp"
 
 /** 
@@ -33,6 +35,9 @@ class Coordinator {
     private:
         Environment* environment;
         ViewModel* viewModel;
+        ChatViewModel* chatViewModel;
+        ChatViewModel* chatTwoViewModel;
+        ChatServerInterface* chatServer;
     protected:
     public:
         /** 
