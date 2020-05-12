@@ -49,7 +49,7 @@ void StandaloneEnvironment::createWindow(ImguiWindow* window)
 
 DataRef* StandaloneEnvironment::buildDataRef(std::string ref) {
     //This part will usually first query the type from XPlane and then create the object
-    DataRef* dataRef = new DataRef(ref, DATA_REF_FLOAT);
+    DataRef* dataRef = new DataRef(ref, DATA_REF_DOUBLE);
     return dataRef;
 }
 
@@ -74,6 +74,7 @@ void StandaloneEnvironment::unSubscribeToDataRef(const DataRef* dataRef) {
 static float count = 0.0f;
 void StandaloneEnvironment::mainLoop()
 {
+
     for(auto &window : windows) {
         //Setup sizes and position
         const auto size = ImVec2(window->getWidth(), window->getHeight());
@@ -92,7 +93,11 @@ void StandaloneEnvironment::mainLoop()
         const DataRef* currentRef = this->dataRefs[i];
         switch(currentRef->getDataRefType()) {
             case DataRefType::DATA_REF_FLOAT : {
-                currentRef->updateFloatValue(count++);
+                currentRef->updateFloatValue(count += 0.001f);
+                break;
+            }
+            case DataRefType::DATA_REF_DOUBLE: {
+                currentRef->updateDoubleValue(count += 0.001f);
                 break;
             }
         }

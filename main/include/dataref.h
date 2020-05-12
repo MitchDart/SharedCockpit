@@ -22,7 +22,7 @@
 /*
 * DataRefType is used to represent different DataRef Types. See XPlane documentation for more on DataRef Types
 */
-enum DataRefType { DATA_REF_FLOAT };
+enum DataRefType { DATA_REF_FLOAT, DATA_REF_DOUBLE };
 
 /*
 * DataRefValue struct is used to represent one unit value for a dataref stream. It's type is implicitly stored by 'type'
@@ -30,6 +30,9 @@ enum DataRefType { DATA_REF_FLOAT };
 struct DataRefValue {
     //Possible float value
     float floatData;
+
+    //Possible float value
+    double doubleData;
 
     //Represent type of this current DataRefValue
     DataRefType type;
@@ -105,4 +108,11 @@ class DataRef {
         * @param value Updated float value to emit to this stream
         */
         void updateFloatValue(float value) const;
+
+        /*
+        * Update Double value for this DataRefStream
+        *
+        * @param value Updated double value to emit to this stream
+        */
+        void updateDoubleValue(double value) const;
 }; 

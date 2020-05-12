@@ -24,6 +24,7 @@
 #include "utils.h"
 #include <iostream>
 #include <functional>
+#include <chrono>
 
 
 FlightRecorderController::FlightRecorderController(Environment* environment) {
@@ -80,14 +81,14 @@ void FlightRecorderController::startRecording() {
 	//Create a new thread
 	auto workThread = rxcpp::observe_on_new_thread();
 
+	//Setup time
+	auto startTime = std::chrono::steady_clock::now();
+	*csvFile << "delta_t";
+
 	//Copy dataRefs to readonly while we record
 	std::vector<rxcpp::observable<DataRefValue>> dataRefObservables;
-	bool first = true;
 	for (auto& dataRef : this->dataRefs) {
-		//Skip comma if first
-		if (!first)
-			*csvFile << ',';
-		first = false;
+		*csvFile << ',';
 
 		dataRefObservables.push_back(dataRef->toObservable());
 
@@ -102,19 +103,24 @@ void FlightRecorderController::startRecording() {
 
 	this->recordingSubscription = Utils::zip_v(dataRefObservables)
 		.observe_on(workThread)
-		.subscribe([&](std::shared_ptr<std::vector<DataRefValue>> value) {
-			for (int i = 0; i < (*value).size(); i++) {
-				auto& v = (*value)[i];
+		.subscribe([&, startTime](std::shared_ptr<std::vector<DataRefValue>> value) {
+			//print delta_t
+			auto current = std::chrono::steady_clock::now();
+			auto elapsed_millis = std::chrono::duration_cast<std::chrono::milliseconds>(current - startTime);
+			*csvFile << elapsed_millis.count();
+
+			for (auto& v : *value) {
+				*csvFile << ',';
 
 				switch (v.type) {
 				case DataRefType::DATA_REF_FLOAT: {
 					*csvFile << v.floatData;
 					break;
 				}
+				case DataRefType::DATA_REF_DOUBLE: {
+					*csvFile << v.doubleData;
+					break;
 				}
-
-				if (i != (*value).size() - 1) {
-					*csvFile << ',';
 				}
 			}
 			*csvFile << std::endl;

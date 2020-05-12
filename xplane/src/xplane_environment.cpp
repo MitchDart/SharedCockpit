@@ -55,6 +55,10 @@ DataRef* XPlaneEnvironment::buildDataRef(std::string ref) {
         type = DATA_REF_FLOAT;
         break;
     }
+    case (xplmType_Float | xplmType_Double): {
+        type = DATA_REF_DOUBLE;
+        break;
+    }
     default: {
         return 0;
     }
@@ -99,6 +103,11 @@ void XPlaneEnvironment::mainLoop() {
         case DataRefType::DATA_REF_FLOAT: {
             float value = XPLMGetDataf(currentRef->getXPlaneDataRef());
             currentRef->updateFloatValue(value);
+            break;
+        }
+        case DataRefType::DATA_REF_DOUBLE: {
+            double value = XPLMGetDatad(currentRef->getXPlaneDataRef());
+            currentRef->updateDoubleValue(value);
             break;
         }
         }

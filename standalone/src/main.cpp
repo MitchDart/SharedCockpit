@@ -17,6 +17,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
+#include <chrono>
+#include <thread>
 
 #include "standalone_environment.h"
 #include "coordinator.h"
@@ -490,6 +492,9 @@ int main(int, char**)
         FrameRender(wd);
 
         FramePresent(wd);
+
+        //Simulate thread speed
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
     }
 
     coordinator.onStop();
