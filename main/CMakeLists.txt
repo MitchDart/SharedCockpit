@@ -13,9 +13,9 @@ include_directories(include)
 include_directories(/usr/local/include)
 
 file(GLOB sources src/*.cpp)
-
 #RxCPP
 find_package(rxcpp CONFIG REQUIRED)
+find_package(GameNetworkingSockets REQUIRED)
 
 add_library(main ${sources})
-target_link_libraries(main rxcpp)
+target_link_libraries(main rxcpp GameNetworkingSockets)

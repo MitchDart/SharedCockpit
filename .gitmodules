@@ -10,3 +10,6 @@
 [submodule "libs/RxCpp"]
 	path = libs/RxCpp
 	url = https://github.com/ReactiveX/RxCpp.git
+[submodule "libs/GameNetworkingSockets"]
+	path = libs/GameNetworkingSockets
+	url = https://github.com/ValveSoftware/GameNetworkingSockets.git
