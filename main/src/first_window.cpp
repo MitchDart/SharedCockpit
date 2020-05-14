@@ -18,7 +18,7 @@
 
 #include "first_window.h"
 
-void FirstWindow::onDraw() const {
+void FirstWindow::onDraw() {
     auto &io = ImGui::GetIO();
     ImGui::Text("ImGui screen size: width = %f  height = %f", io.DisplaySize.x, io.DisplaySize.y);
     ImGui::Text("Want capture mouse: %i", io.WantCaptureMouse);
@@ -26,6 +26,4 @@ void FirstWindow::onDraw() const {
     ImGui::Text("Is any items active or hovered: %i", ImGui::IsAnyItemHovered());
 
     ImGui::Text("This is some specific text just to make sure!");
-    ImGui::Text("Some ints %i", viewModel->getValue());
-    ImGui::Text("Some char %c", viewModel->getChar());
 }

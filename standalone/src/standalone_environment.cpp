@@ -17,6 +17,10 @@
 */
 
 #include "standalone_environment.h"
+#include <iostream>
+#include <thread>
+#include <algorithm>
+#include <type_traits>
 
 StandaloneEnvironment::StandaloneEnvironment(rxcpp::schedulers::run_loop *rlp)
     : Environment(rlp) {
@@ -33,7 +37,7 @@ StandaloneEnvironment::~StandaloneEnvironment()
     windows.clear();
 }
 
-void StandaloneEnvironment::createWindow(const ImguiWindow* window)
+void StandaloneEnvironment::createWindow(ImguiWindow* window)
 {
     //If we already have this window then don't add it again.
     for(const auto &existingWindow : windows)
@@ -43,9 +47,35 @@ void StandaloneEnvironment::createWindow(const ImguiWindow* window)
     windows.push_back(window);
 }
 
+DataRef* StandaloneEnvironment::buildDataRef(std::string ref) {
+    //This part will usually first query the type from XPlane and then create the object
+    DataRef* dataRef = new DataRef(ref, DATA_REF_DOUBLE);
+    return dataRef;
+}
+
+void StandaloneEnvironment::subscribeToDataRef(const DataRef* dataRef) {
+
+    //If the dataref is already inside the list then dont bother checking again
+    for(int i = 0; i < this->dataRefs.size(); i++) {
+        if(this->dataRefs[i] == dataRef)
+            return;
+    }
+        
+    this->dataRefs.push_back(dataRef);
+}
+
+void StandaloneEnvironment::unSubscribeToDataRef(const DataRef* dataRef) {
+    for (int i = 0; i < this->dataRefs.size(); i++) {
+        if (this->dataRefs[i] == dataRef)
+            this->dataRefs.erase(this->dataRefs.begin() + i);
+    }
+}
+
+static float count = 0.0f;
 void StandaloneEnvironment::mainLoop()
 {
-    for(const auto &window : windows) {
+
+    for(auto &window : windows) {
         //Setup sizes and position
         const auto size = ImVec2(window->getWidth(), window->getHeight());
         const auto position = ImVec2(window->getX(), window->getY());
@@ -57,4 +87,24 @@ void StandaloneEnvironment::mainLoop()
         window->onDraw();
         ImGui::End();
     }
+
+    //Figure out what type of data ref it is
+    for(int i = 0; i < this->dataRefs.size(); i++) {
+        const DataRef* currentRef = this->dataRefs[i];
+        switch(currentRef->getDataRefType()) {
+            case DataRefType::DATA_REF_FLOAT : {
+                currentRef->updateFloatValue(count += 0.001f);
+                break;
+            }
+            case DataRefType::DATA_REF_DOUBLE: {
+                currentRef->updateDoubleValue(count += 0.001f);
+                break;
+            }
+        }
+    }
+}
+
+void StandaloneEnvironment::onLaunch() {
+}
+void StandaloneEnvironment::onExit() {
 }

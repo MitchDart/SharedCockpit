@@ -19,10 +19,8 @@
 #pragma once
 
 #include "environment.h"
-#include "chat_server_interface.h"
-#include "viewmodel.h"
-#include "chat_view_model.h"
 #include "rx.hpp"
+#include "flight_recorder/flight_recorder_controller.h"
 
 /** 
  * Coordinator is responsible for coordinating the flow of the application
@@ -34,10 +32,9 @@
 class Coordinator {
     private:
         Environment* environment;
-        ViewModel* viewModel;
-        ChatViewModel* chatViewModel;
-        ChatViewModel* chatTwoViewModel;
-        ChatServerInterface* chatServer;
+
+        //Controllers
+        FlightRecorderController* flightRecorderController;
     protected:
     public:
         /** 

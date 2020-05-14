@@ -18,9 +18,8 @@
 
 #include "xplane_environment.h"
 
-XPlaneEnvironment::XPlaneEnvironment()
-{
-    
+XPlaneEnvironment::XPlaneEnvironment() : Environment(rlp) {
+    rlp = new rxcpp::schedulers::run_loop();
 }
 
 XPlaneEnvironment::~XPlaneEnvironment()
@@ -31,12 +30,88 @@ XPlaneEnvironment::~XPlaneEnvironment()
     }
     //Clear vector to prevent seg faults
     windows.clear();
+
+    delete rlp;
 }
 
-void XPlaneEnvironment::createWindow(const ImguiWindow* window)
+void XPlaneEnvironment::createWindow(ImguiWindow* window)
 {
     const auto adapter = new ImgWindowAdapter(window);
     //Store window for now
     windows.push_back(adapter);
     adapter->SetVisible(true);
+}
+
+DataRef* XPlaneEnvironment::buildDataRef(std::string ref) {
+    auto xplDataRef = XPLMFindDataRef(ref.c_str());
+    if (xplDataRef == NULL) {
+        return 0;
+    }
+
+    DataRefType type;
+
+    switch (XPLMGetDataRefTypes(xplDataRef)) {
+    case xplmType_Float: {
+        type = DATA_REF_FLOAT;
+        break;
+    }
+    case (xplmType_Float | xplmType_Double): {
+        type = DATA_REF_DOUBLE;
+        break;
+    }
+    default: {
+        return 0;
+    }
+    }
+
+    XPlaneDataRef* dataRef = new XPlaneDataRef(xplDataRef, ref, type);
+    return dataRef;
+}
+
+void XPlaneEnvironment::subscribeToDataRef(const DataRef* dataRef) {
+    const XPlaneDataRef* xplDataRef = static_cast<const XPlaneDataRef*>(dataRef);
+
+    //If the dataref is already inside the list then dont bother checking again
+    for (int i = 0; i < this->dataRefs.size(); i++) {
+        if (this->dataRefs[i] == dataRef)
+            return;
+    }
+
+    this->dataRefs.push_back(xplDataRef);
+}
+
+void XPlaneEnvironment::unSubscribeToDataRef(const DataRef* dataRef) {
+    for (int i = 0; i < this->dataRefs.size(); i++) {
+        if (this->dataRefs[i] == dataRef)
+            this->dataRefs.erase(this->dataRefs.begin() + i);
+    }
+}
+
+void XPlaneEnvironment::onLaunch() {
+
+}
+
+void XPlaneEnvironment::onExit() {
+
+}
+
+void XPlaneEnvironment::mainLoop() {
+    //Figure out what type of data ref it is
+    for (int i = 0; i < this->dataRefs.size(); i++) {
+        const XPlaneDataRef* currentRef = static_cast<const XPlaneDataRef*>(this->dataRefs[i]);
+        switch (currentRef->getDataRefType()) {
+        case DataRefType::DATA_REF_FLOAT: {
+            float value = XPLMGetDataf(currentRef->getXPlaneDataRef());
+            currentRef->updateFloatValue(value);
+            break;
+        }
+        case DataRefType::DATA_REF_DOUBLE: {
+            double value = XPLMGetDatad(currentRef->getXPlaneDataRef());
+            currentRef->updateDoubleValue(value);
+            break;
+        }
+        }
+    }
+
+    this->rlp->dispatch();
 }

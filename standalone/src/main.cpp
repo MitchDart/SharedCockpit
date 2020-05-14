@@ -17,6 +17,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
+#include <chrono>
+#include <thread>
 
 #include "standalone_environment.h"
 #include "coordinator.h"
@@ -444,12 +446,13 @@ int main(int, char**)
     }
 
     // Our state
-    bool show_demo_window = false;
+    bool show_demo_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Setup environment
     rxcpp::schedulers::run_loop mainRunLoop;
     auto environment = StandaloneEnvironment(&mainRunLoop);
+    environment.onLaunch();
     // Setup coordinator
     auto coordinator = Coordinator(&environment);
     coordinator.onStart();
@@ -489,9 +492,13 @@ int main(int, char**)
         FrameRender(wd);
 
         FramePresent(wd);
+
+        //Simulate thread speed
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));
     }
 
     coordinator.onStop();
+    environment.onExit();
 
     // Cleanup
     err = vkDeviceWaitIdle(g_Device);

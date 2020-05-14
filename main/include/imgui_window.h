@@ -44,7 +44,7 @@ class ImguiWindow {
         *
         * This function should be used to draw all UI elements on the window.
         */
-        virtual void onDraw() const = 0;
+        virtual void onDraw() = 0;
     protected:
     private:
         std::string name;

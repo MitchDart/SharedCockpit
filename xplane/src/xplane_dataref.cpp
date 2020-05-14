@@ -16,23 +16,12 @@
 * GNU General Public License for more details.
 */
 
-#pragma once
+#include "xplane_dataref.h"
 
-#include "imgui_window.h"
-#include "imgui.h"
+XPlaneDataRef::XPlaneDataRef(XPLMDataRef& xplDataRef, std::string ref, DataRefType dataRefType) : DataRef(ref, dataRefType) {
+	this->xplDataRef = xplDataRef;
+}
 
-/** 
- * First demo window
- * 
- * 
- */ 
-class FirstWindow : public ImguiWindow
-{
-    private:
-    protected:
-        void onDraw() override;
-    public:
-        FirstWindow(std::string name, int width, int height, int x, int y) : ImguiWindow(name, width, height, x, y) {
-        };
-        ~FirstWindow() override {};
-};
+XPLMDataRef XPlaneDataRef::getXPlaneDataRef() const {
+	return xplDataRef;
+}

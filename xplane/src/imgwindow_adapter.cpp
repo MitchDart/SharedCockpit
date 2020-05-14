@@ -18,7 +18,7 @@
 
 #include "imgwindow_adapter.h"
 
-ImgWindowAdapter::ImgWindowAdapter(const ImguiWindow* window) : ImgWindow() {
+ImgWindowAdapter::ImgWindowAdapter(ImguiWindow* window) : ImgWindow() {
     this->window = window;
     Init(window->getWidth(), window->getHeight(), window->getX(), window->getY());
     SetWindowTitle(window->getName());

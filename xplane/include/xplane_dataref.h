@@ -18,21 +18,14 @@
 
 #pragma once
 
-#include "imgui_window.h"
-#include "imgui.h"
+#include "dataref.h"
+#include "XPLMDataAccess.h"
 
-/** 
- * First demo window
- * 
- * 
- */ 
-class FirstWindow : public ImguiWindow
-{
-    private:
-    protected:
-        void onDraw() override;
-    public:
-        FirstWindow(std::string name, int width, int height, int x, int y) : ImguiWindow(name, width, height, x, y) {
-        };
-        ~FirstWindow() override {};
+class XPlaneDataRef : public DataRef {
+	private:
+		XPLMDataRef xplDataRef;
+	protected:
+	public:
+		XPLMDataRef getXPlaneDataRef() const;
+		XPlaneDataRef(XPLMDataRef& xplDataRef, std::string ref, DataRefType dataRefType);
 };

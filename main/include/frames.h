@@ -18,21 +18,6 @@
 
 #pragma once
 
-#include "imgui_window.h"
-#include "imgui.h"
-
-/** 
- * First demo window
- * 
- * 
- */ 
-class FirstWindow : public ImguiWindow
-{
-    private:
-    protected:
-        void onDraw() override;
-    public:
-        FirstWindow(std::string name, int width, int height, int x, int y) : ImguiWindow(name, width, height, x, y) {
-        };
-        ~FirstWindow() override {};
+struct FlightDataRecordingFrame {
+    float value;
 };

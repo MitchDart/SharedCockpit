@@ -21,6 +21,9 @@
 #include <vector>
 #include "imgwindow_adapter.h"
 #include "imgwindow.h"
+#include "rx.hpp"
+#include "XPLMDataAccess.h"
+#include "xplane_dataref.h"
 
 /** 
  * XPlane Environment
@@ -32,10 +35,20 @@ class XPlaneEnvironment : public Environment
     private:
         //List of windows currently active
         std::vector<const ImgWindow*> windows;
+        std::vector<const XPlaneDataRef*> dataRefs;
+        rxcpp::schedulers::run_loop* rlp;
     protected:
-        //Override
-        void createWindow(const ImguiWindow* window) override;
     public:
+        //Override
+        void createWindow(ImguiWindow* window) override;
+        DataRef* buildDataRef(std::string ref) override;
+
+        void subscribeToDataRef(const DataRef* dataRef) override;
+        void unSubscribeToDataRef(const DataRef* dataRef) override;
+
+        void onLaunch() override;
+        void onExit() override;
+
         //Constructor
         XPlaneEnvironment();
         ~XPlaneEnvironment();

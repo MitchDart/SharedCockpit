@@ -27,5 +27,5 @@ find_package(OpenGL REQUIRED)
 set(LIBRARIES "${OPENGL_gl_LIBRARY}")
 
 add_subdirectory(${PROJECT_ROOT_DIR}/libs/xplane_sdk ${PROJECT_ROOT_DIR}/bin)
-add_xplane_plugin(xplane 301 src/main.cpp src/xplane_environment.cpp src/imgwindow_adapter.cpp src/osx_clipboard.cpp ${IMGWINDOW_DIR}/imgwindow.cpp ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_demo.cpp ${IMGUI_DIR}/imgui_widgets.cpp)
-target_link_libraries(xplane main ${LIBRARIES})
+add_xplane_plugin(win 301 src/main.cpp src/xplane_environment.cpp src/imgwindow_adapter.cpp src/osx_clipboard.cpp src/xplane_dataref.cpp ${IMGWINDOW_DIR}/imgwindow.cpp ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_demo.cpp ${IMGUI_DIR}/imgui_widgets.cpp)
+target_link_libraries(win main ${LIBRARIES})
