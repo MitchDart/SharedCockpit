@@ -21,10 +21,17 @@
 #include <thread>
 #include <algorithm>
 #include <type_traits>
+#include <chrono>
+#include "utils.h"
 
 StandaloneEnvironment::StandaloneEnvironment(rxcpp::schedulers::run_loop *rlp)
     : Environment(rlp) {
-    
+    //Create standalone window
+    this->standAloneWindow = new StandaloneWindow("Standalone Simulation", 500, 200, 0, 0);
+    this->createWindow(this->standAloneWindow);
+    this->standAloneWindow->setOnSimulationRestartListener([&]() {
+        this->restartSimulation();
+    });
 }
 
 StandaloneEnvironment::~StandaloneEnvironment()
@@ -74,7 +81,6 @@ void StandaloneEnvironment::unSubscribeToDataRef(const DataRef* dataRef) {
 static float count = 0.0f;
 void StandaloneEnvironment::mainLoop()
 {
-
     for(auto &window : windows) {
         //Setup sizes and position
         const auto size = ImVec2(window->getWidth(), window->getHeight());
@@ -88,18 +94,49 @@ void StandaloneEnvironment::mainLoop()
         ImGui::End();
     }
 
-    //Figure out what type of data ref it is
-    for(int i = 0; i < this->dataRefs.size(); i++) {
-        const DataRef* currentRef = this->dataRefs[i];
-        switch(currentRef->getDataRefType()) {
-            case DataRefType::DATA_REF_FLOAT : {
-                currentRef->updateFloatValue(count += 0.001f);
-                break;
+    //Check if simulation file is loaded
+    if (this->recordingFile != 0) {
+        std::string line = "";
+        if (getline(*this->recordingFile, line)) {
+            //We have another line to parse in thex file
+            this->recordingDataRefData = Utils::split(line, ",");
+            //Get millis
+            auto millis = std::stoll(this->recordingDataRefData[0]);
+            auto current = std::chrono::steady_clock::now();
+            auto elapsed_millis = std::chrono::duration_cast<std::chrono::milliseconds>(current - this->recordingElapsedTime);
+            //Simulate thread speed
+            std::this_thread::sleep_for(std::chrono::milliseconds(millis - elapsed_millis.count()));
+
+            //Figure out what type of data ref it is
+            for (int i = 0; i < this->dataRefs.size(); i++) {
+                const DataRef* currentRef = this->dataRefs[i];
+                //Search for this DataRef
+                auto itr = std::find(this->recordingDataRefHeaders.begin(), this->recordingDataRefHeaders.end(), currentRef->getRef());
+                if (itr != this->recordingDataRefHeaders.end()) {
+                    //We have found a matching dataRef
+                    int index = std::distance(recordingDataRefHeaders.begin(), itr);
+                    auto value = this->recordingDataRefData[index];
+
+                    //Convert to correct type and update stream
+                    switch (currentRef->getDataRefType()) {
+                    case DataRefType::DATA_REF_FLOAT: {
+                        currentRef->updateFloatValue(std::stof(value));
+                        break;
+                    }
+                    case DataRefType::DATA_REF_DOUBLE: {
+                        currentRef->updateDoubleValue(std::stod(value));
+                        break;
+                    }
+                    }
+                }
             }
-            case DataRefType::DATA_REF_DOUBLE: {
-                currentRef->updateDoubleValue(count += 0.001f);
-                break;
-            }
+
+            this->standAloneWindow->setFrameCount(this->frameCounter++);
+        }
+        else {
+            this->recordingFile->close();
+            delete this->recordingFile;
+            this->recordingFile = 0;
         }
     }
 }
@@ -107,4 +144,27 @@ void StandaloneEnvironment::mainLoop()
 void StandaloneEnvironment::onLaunch() {
 }
 void StandaloneEnvironment::onExit() {
+    if (this->recordingFile != 0 && this->recordingFile->is_open()) {
+        this->recordingFile->close();
+        delete this->recordingFile;
+        this->recordingFile = 0;
+    }
+}
+
+void StandaloneEnvironment::restartSimulation() {
+    if (this->recordingFile != 0 && this->recordingFile->is_open()) {
+        this->recordingFile->close();
+        delete this->recordingFile;
+        this->recordingFile = 0;
+    }
+
+    auto recordingFile = new std::ifstream("simulation/recording.csv");
+    std::string line = "";
+    if (getline(*recordingFile, line)) {
+        this->recordingDataRefHeaders = Utils::split(line, ",");
+        this->recordingFile = recordingFile;
+        this->recordingElapsedTime = std::chrono::steady_clock::now();
+    }
+
+    this->frameCounter = 0;
 }

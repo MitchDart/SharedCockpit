@@ -22,6 +22,8 @@
 #include "environment.h"
 #include "imgui.h"
 #include "dataref.h"
+#include "standalone_window.h"
+#include <fstream>
 
 /** 
  * Standalone Environment
@@ -36,6 +38,20 @@ class StandaloneEnvironment : public Environment
         
         //List of datarefs 
         std::vector<const DataRef*> dataRefs;
+        std::vector<std::string> recordingDataRefHeaders;
+        std::vector<std::string> recordingDataRefData;
+
+        int frameCounter = 0;
+
+        std::chrono::steady_clock::time_point recordingElapsedTime;
+
+        //Standalone Window
+        StandaloneWindow* standAloneWindow;
+
+        //Recording file stream
+        std::ifstream* recordingFile = 0;
+
+        void restartSimulation();
     protected:
         //Override
         void createWindow(ImguiWindow* window) override;
