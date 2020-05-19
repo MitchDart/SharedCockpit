@@ -34,7 +34,8 @@ include_directories(${IMGUI_DIR} .)
 find_package(rxcpp REQUIRED)
 find_package(Vulkan REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
-set(LIBRARIES "glfw;${Vulkan_LIBRARY};rxcpp")
+set(LIBRARIES "glfw;${Vulkan_LIBRARY};rxcpp;GameNetworkingSockets")
+
 
 # Use vulkan headers from glfw:
 include_directories(${GLFW_DIR}/deps)
@@ -44,6 +45,7 @@ include_directories(${PROJECT_ROOT_DIR}/main/include)
 
 #standalone include
 include_directories(include)
+find_package(GameNetworkingSockets REQUIRED)
 
 file(GLOB sources src/*.cpp)
 

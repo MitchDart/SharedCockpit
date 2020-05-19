@@ -21,6 +21,7 @@
 #include "environment.h"
 #include "rx.hpp"
 #include "flight_recorder/flight_recorder_controller.h"
+#include "chat/chat_view_model.h"
 
 /** 
  * Coordinator is responsible for coordinating the flow of the application
@@ -35,6 +36,9 @@ class Coordinator {
 
         //Controllers
         FlightRecorderController* flightRecorderController;
+
+        ChatViewModel* chatViewModel;
+        ChatViewModel* chatViewModel2;
     protected:
     public:
         /** 

@@ -15,12 +15,13 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 * GNU General Public License for more details.
 */
-
-#pragma once
-
 #include "imgui_window.h"
 #include "imgui.h"
-#include "chat_view_model.h"
+#include <functional>
+#include <vector>
+#include <string>
+
+#pragma once
 
 /** 
  * First demo window
@@ -30,12 +31,18 @@
 class ChatWindow : public ImguiWindow
 {
     private:
-        ChatViewModel* viewModel;
+        char messageInput[100] = "";
+
     protected:
-        void onDraw() const override;
-    public:
-        ChatWindow(std::string name, int width, int height, int x, int y, ChatViewModel* viewModel) : ImguiWindow(name, width, height, x, y) {
-            this->viewModel = viewModel;
+        void onDraw() override;
+
+       public:
+        std::vector<std::string> messages;
+        ChatWindow(std::string name, int width, int height, int x, int y,
+                   std::function<void(std::string)>&& onMessage)
+            : ImguiWindow(name, width, height, x, y) {
+          this->onMessage = onMessage;
         };
-        ~ChatWindow() override {};
+        ~ChatWindow() override{};
+        std::function<void(std::string)> onMessage;
 };

@@ -18,22 +18,26 @@
 
 #include "chat_window.h"
 
-void ChatWindow::onDraw() const
+void ChatWindow::onDraw()
 {
   auto &io = ImGui::GetIO();
 
-  ImGui::BeginChild("Main");
-  ImGui::Text("Amount of user %i", viewModel->getMessageCount());
-  ImGui::TextColored(ImVec4(1, 1, 0, 1), "Messages for %s",
-                     viewModel->getName().data());
-  vector<string> messages = viewModel->getMessagesFrom(viewModel->getName());
-  ImGui::BeginChild("Scrolling", ImVec2(-1, this->getHeight() / 2), true,
-                    ImGuiWindowFlags_HorizontalScrollbar);
-  for (auto it = messages.begin(); it != messages.end(); it++)
-  {
-    ImGui::Text("%s", it->data());
+  ImGui::BeginChild("Chat");
+
+  ImGui::ListBoxHeader("");
+  for (int i = 0; i < this->messages.size(); i++) {
+    ImGui::Selectable((this->messages)[i].c_str(), false,
+                      ImGuiSelectableFlags_Disabled);
   }
-  ImGui::EndChild();
-  ImGui::InputText("test", viewModel->textInput, IM_ARRAYSIZE(viewModel->textInput));
+  ImGui::ListBoxFooter();
+
+  ImGui::Text("Message");
+  ImGui::InputTextWithHint("", "", this->messageInput, IM_ARRAYSIZE(this->messageInput));
+  ImGui::SameLine();
+  if (ImGui::Button("Send")) {
+    std::string message(messageInput);
+    this->onMessage(message);
+  }
+
   ImGui::EndChild();
 }
