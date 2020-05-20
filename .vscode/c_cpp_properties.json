@@ -3,12 +3,12 @@
         {
             "name": "Mac",
             "includePath": [
+                "${workspaceFolder}/**",
                 "${workspaceFolder}/standalone/include",
                 "${workspaceFolder}/main/include",
                 "${workspaceFolder}/xplane/include",
                 "${workspaceFolder}/libs/imgx/src",
-                "/usr/local/include/rxcpp",
-                "C:/Users/mitch/Code/vcpkg/installed/x64-windows/include/rxcpp"
+                "/usr/local/include/"
             ],
             "defines": [],
             "macFrameworkPath": [
@@ -19,6 +19,24 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64",
             "configurationProvider": "vector-of-bool.cmake-tools"
+        },
+        {
+            "name": "WindowsEben",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${vcpkgRoot}/x64-windows/include",
+                "${vcpkgRoot}/x86-windows/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.18362.0",
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.25.28610/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64"
         }
     ],
     "version": 4
