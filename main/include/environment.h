@@ -20,6 +20,7 @@
 #include "imgui_window.h"
 #include "rx.hpp"
 #include <string>
+#include <functional>
 #include "frames.h"
 #include "dataref.h"
 

@@ -19,6 +19,7 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <functional>
 #include "environment.h"
 #include "imgui.h"
 #include "dataref.h"
@@ -65,7 +66,6 @@ class StandaloneEnvironment : public Environment
         void subscribeToDataRef(const DataRef* dataRef) override;
 
         void unSubscribeToDataRef(const DataRef* dataRef) override;
-
 
         /**
          * Main loop is called for each event loop run from main.cpp
