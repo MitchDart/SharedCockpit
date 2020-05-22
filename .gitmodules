@@ -1,15 +1,9 @@
 [submodule "libs/imgx"]
 	path = libs/imgx
 	url = https://github.com/rhard/imgx.git
-[submodule "libs/glfw"]
-	path = libs/glfw
-	url = https://github.com/glfw/glfw.git
 [submodule "libs/xplane_sdk"]
 	path = libs/xplane_sdk
 	url = https://github.com/leecbaker/xplane_sdk
-[submodule "libs/RxCpp"]
-	path = libs/RxCpp
-	url = https://github.com/ReactiveX/RxCpp.git
 [submodule "libs/GameNetworkingSockets"]
 	path = libs/GameNetworkingSockets
 	url = https://github.com/ValveSoftware/GameNetworkingSockets.git
