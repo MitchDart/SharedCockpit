@@ -60,7 +60,7 @@ class ChatClient : private ISteamNetworkingSocketsCallbacks,
     std::thread([&]() {
       for (;;) {
         this->Run();
-        std::this_thread::sleep_for(std::chrono::microseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
       }
     }).detach();
   }
