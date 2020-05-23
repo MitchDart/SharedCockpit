@@ -15,6 +15,8 @@ list(APPEND CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake
 )
 
+add_subdirectory(libs/GameNetworkingSockets)
+
 # Add the three targets
 add_subdirectory(main)
 add_subdirectory(standalone)

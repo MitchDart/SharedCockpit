@@ -25,7 +25,7 @@ find_package(rxcpp REQUIRED)
 find_package(Vulkan REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
-set(LIBRARIES "${Vulkan_LIBRARY};rxcpp;GameNetworkingSockets")
+set(LIBRARIES ";${Vulkan_LIBRARY};rxcpp")
 
 #main lib
 include_directories(${PROJECT_ROOT_DIR}/main/include)
@@ -38,4 +38,4 @@ file(GLOB sources src/*.cpp)
 configure_file( ${PROJECT_ROOT_DIR}/SharedCockpitConfig.h.in SharedCockpitConfig.h)
 
 add_executable(standalone ${sources} ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_demo.cpp ${IMGUI_DIR}/imgui_widgets.cpp)
-target_link_libraries(standalone PRIVATE main glfw ${LIBRARIES})
+target_link_libraries(standalone main glfw GameNetworkingSockets_s ${LIBRARIES})

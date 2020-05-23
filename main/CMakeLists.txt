@@ -7,9 +7,9 @@ set(PROJECT_ROOT_DIR ../)
 set(IMGUI_DIR ${PROJECT_ROOT_DIR}/libs/imgx/imgui)
 include_directories(${IMGUI_DIR} .)
 
-find_package(rxcpp CONFIG REQUIRED)
+include_directories(${PROJECT_ROOT_DIR}/libs/GameNetworkingSockets/include)
 
-add_subdirectory(${PROJECT_ROOT_DIR}/libs/GameNetworkingSockets ${PROJECT_ROOT_DIR}/libs/GameNetworkingSockets/build)
+find_package(rxcpp CONFIG REQUIRED)
 
 add_library(main 
 	"src/coordinator.cpp"
@@ -24,4 +24,4 @@ add_library(main
 
 include_directories(include include/chat)
 
-target_link_libraries(main rxcpp GameNetworkingSockets::static)
+target_link_libraries(main rxcpp GameNetworkingSockets_s)
