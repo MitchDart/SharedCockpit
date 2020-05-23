@@ -16,16 +16,6 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_PROTOTYPES")
 
 set(PROJECT_ROOT_DIR ../)
 
-# GLFW
-set(GLFW_DIR ${PROJECT_ROOT_DIR}/libs/glfw) # Set this to point to an up-to-date GLFW repo
-option(GLFW_BUILD_EXAMPLES "Build the GLFW example programs" OFF)
-option(GLFW_BUILD_TESTS "Build the GLFW test programs" OFF)
-option(GLFW_BUILD_DOCS "Build the GLFW documentation" OFF)
-option(GLFW_INSTALL "Generate installation target" OFF)
-option(GLFW_DOCUMENT_INTERNALS "Include internals in documentation" OFF)
-add_subdirectory(${GLFW_DIR} binary_dir EXCLUDE_FROM_ALL)
-include_directories(${GLFW_DIR}/include)
-
 # Dear ImGui
 set(IMGUI_DIR ${PROJECT_ROOT_DIR}/libs/imgx/imgui)
 include_directories(${IMGUI_DIR} .)
@@ -33,23 +23,19 @@ include_directories(${IMGUI_DIR} .)
 # Libraries
 find_package(rxcpp REQUIRED)
 find_package(Vulkan REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
-set(LIBRARIES "glfw;${Vulkan_LIBRARY};rxcpp;GameNetworkingSockets")
-
-
-# Use vulkan headers from glfw:
-include_directories(${GLFW_DIR}/deps)
+set(LIBRARIES "${Vulkan_LIBRARY};rxcpp;GameNetworkingSockets")
 
 #main lib
 include_directories(${PROJECT_ROOT_DIR}/main/include)
 
 #standalone include
 include_directories(include)
-find_package(GameNetworkingSockets REQUIRED)
 
 file(GLOB sources src/*.cpp)
 
 configure_file( ${PROJECT_ROOT_DIR}/SharedCockpitConfig.h.in SharedCockpitConfig.h)
 
 add_executable(standalone ${sources} ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_demo.cpp ${IMGUI_DIR}/imgui_widgets.cpp)
-target_link_libraries(standalone main ${LIBRARIES})
+target_link_libraries(standalone PRIVATE main glfw ${LIBRARIES})
