@@ -20,7 +20,7 @@ add_library(main
 	"src/flight_recorder/flight_recorder_controller.cpp" 
 	"src/chat/chat_view_model.cpp"
 	"src/chat/chat_window.cpp" 
-	 "include/chat/connection_manager.h")
+	 "include/chat/connection_manager.h" "src/network_controller/client_window.cpp" "src/network_controller/server_window.cpp")
 
 include_directories(include include/chat)
 

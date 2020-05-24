@@ -17,6 +17,8 @@
 */
 
 #pragma once
+#include "rxcpp/rx.hpp"
+#include "network_state_enums.h"
 
 /**
  * Oneliner description of class.
@@ -32,6 +34,9 @@ public:
 
 protected:
 private:
+    rxcpp::subjects::subject<ConnectionState> connectionState;
+
+
     //This will be called by the subclass Server constructor but never called by client.. Duh
     //This will be blocking
     void initServer();
