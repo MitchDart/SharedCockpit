@@ -18,20 +18,50 @@
 
 #pragma once
 
+
 /**
  * Oneliner description of class.
  *
  * Paragraph explaining how the class is used and what its purpose is in more detail.
  */
  //Class
+#include "steam/steamnetworkingsockets.h"
 #include <string>
+#include <map>
+
+class INetworkControllerCallbacks {
+public:
+protected:
+    //FOR SERVERS
+    virtual void onClientConnected(uint32 client) = 0;
+
+    //FOR CLIENTS
+    virtual void onConnectedToServer() = 0;
+private:
+};
+
+// FIXME:: remove example code
+// Only for plumbing sake
+struct Client_t
+{
+	std::string m_sNick;
+};
 
 class NetworkController : private ISteamNetworkingSocketsCallbacks {
 
 public:
+  NetworkController();
+  ~NetworkController();
 
 protected:
 private:
+    ISteamNetworkingSockets *m_pInterface;
+    // FIXME: example properties
+	std::map< HSteamNetConnection, Client_t> m_mapClients;
+	HSteamListenSocket m_hListenSock;
+	HSteamNetPollGroup m_hPollGroup;
+    // FIXME:: needs to be evaluated
+
     //This will be called by the subclass Server constructor but never called by client.. Duh
     //This will be blocking
     void initServer();
@@ -46,27 +76,9 @@ private:
     virtual void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks) = 0;
 
     INetworkControllerCallbacks* callback;
+
+
+    void OnSteamNetConnectionStatusChanged( SteamNetConnectionStatusChangedCallback_t* pInfo) override;
+
+    bool isServer = true;
 };
-
-class INetworkControllerCallbacks {
-public:
-protected:
-    //FOR SERVERS
-    virtual void onClientConnected(uint32 client) = 0;
-
-    //FOR CLIENTS
-    virtual void onConnectedToServer() = 0;
-private:
-};
-
-
-
-/**
- * One liner funciton description.
-*
-* Function description in a paragraph.
-*
-* @param parameter1 some comments
-* @param parameter2 some comments
-*/
-//Function

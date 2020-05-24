@@ -19,6 +19,20 @@
 #pragma once
 #include "peer.h"
 #include <string>
+#include "steam/steamnetworkingsockets.h"
+#include "network_controller/network_controller.h"
+
+class IServerCallbacks : protected INetworkControllerCallbacks {
+public:
+	virtual void onClientConntected(std::string ipAddress) = 0;
+protected:
+	void onClientConnected(uint32 client) override {
+		//store client as member
+		//do calls to get ip address
+		onClientConnected(1987312);
+	};
+	void onConnectedToServer() override { }
+};
 
 class Server : Peer {
 public:
@@ -36,24 +50,14 @@ public:
 	* Set callback delegate for connection events.
 	*/
 	void setServerCallbacks(IServerCallbacks* callbacks);
-
 	/*
 	* Disconnect client
 	*/
 	void disconnectClient();
 protected:
 private:
-	IServerCallbacks* callbacks;
-};
+ void sendMessage(void* message);
+ void pollMessage(void* message);
 
-class IServerCallbacks : protected INetworkControllerCallbacks {
-public:
-	virtual void onClientConntected(std::string ipAddress) = 0;
-protected:
-	void onClientConnected(uint32 client) override {
-		//store client as member
-		//do calls to get ip address
-		onClientConnected("ip address");
-	};
-	void onConnectedToServer() override { }
+ IServerCallbacks* callbacks;
 };
