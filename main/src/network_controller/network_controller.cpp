@@ -16,6 +16,24 @@
 #include <thread>
 
 NetworkController::NetworkController() {
+  /* Creating a client and listen to a client's callbacks
+
+    m_hConnection = connectionManager->steamSockets->ConnectByIPAddress(
+        connectionManager->steamServerConnection, 0, nullptr);
+    m_pInterface = connectionManager->steamSockets;
+
+    if (m_hConnection == k_HSteamNetConnection_Invalid)
+      FireAndForget("Failed to create connection");
+
+    // Using a pretty nifty task of abstraction
+    std::thread([&]() {
+      for (;;) {
+        this->Run();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      }
+    }).detach();
+    */
+
 }
 
 NetworkController::~NetworkController() {}

@@ -41,7 +41,7 @@ private:
 };
 
 // FIXME:: remove example code
-// Only for plumbing sake
+// Only for plumbing sake for server
 struct Client_t
 {
 	std::string m_sNick;
@@ -55,7 +55,8 @@ public:
 
 protected:
 private:
-    ISteamNetworkingSockets *m_pInterface;
+    HSteamNetConnection* m_hConnection;
+    ISteamNetworkingSockets* m_pInterface;
     // FIXME: example properties
 	std::map< HSteamNetConnection, Client_t> m_mapClients;
 	HSteamListenSocket m_hListenSock;
@@ -72,11 +73,13 @@ private:
     //This will be blocking
     void connectToServer(std::string address);
 
+
+    void PollConnectionStateChanges() { m_pInterface->RunCallbacks(this); }
+
     //Set by either client or server and will be IServerCallbacks or IClientCallbacks
     virtual void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks) = 0;
 
     INetworkControllerCallbacks* callback;
-
 
     void OnSteamNetConnectionStatusChanged( SteamNetConnectionStatusChangedCallback_t* pInfo) override;
 

@@ -32,7 +32,11 @@ class Client : Peer {
   ~Client();
   // Peer functions
   virtual void sendMessage(void* message);
-  virtual void* pollMessage();
+  void* pollMessage();
+
+  void setConnection();
+  void setInterface();
+
 
  protected:
  private:
