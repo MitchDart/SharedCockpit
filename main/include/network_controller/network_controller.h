@@ -57,10 +57,7 @@ public:
 
 protected:
 private:
-<<<<<<< HEAD
     rxcpp::subjects::subject<ConnectionState> connectionState;
-
-=======
     HSteamNetConnection* m_hConnection;
     ISteamNetworkingSockets* m_pInterface;
     // FIXME: example properties
@@ -68,7 +65,6 @@ private:
 	HSteamListenSocket m_hListenSock;
 	HSteamNetPollGroup m_hPollGroup;
     // FIXME:: needs to be evaluated
->>>>>>> 33fbf51a936e3df60102e61ba5611cbaf5cc7a23
 
     //This will be called by the subclass Server constructor but never called by client.. Duh
     //This will be blocking
