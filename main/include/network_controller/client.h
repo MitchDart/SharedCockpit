@@ -20,15 +20,24 @@
 #include "peer.h"
 
 class Client : Peer {
-public:
-	/**
-	/* Constructor will be responsible for initializating the server and begin listening for connections.
-	/**/
-	Client();
-	/*
-	* Disconnects from the server
-	*/
-	~Client();
-protected:
-private:
-}
+ public:
+  /**
+  /* Constructor will be responsible for initializating the server and begin
+  listening for connections.
+  /**/
+  Client();
+  /*
+   * Disconnects from the server
+   */
+  ~Client();
+  // Peer functions
+  virtual void sendMessage(void* message);
+  void* pollMessage();
+
+  void setConnection();
+  void setInterface();
+
+
+ protected:
+ private:
+};

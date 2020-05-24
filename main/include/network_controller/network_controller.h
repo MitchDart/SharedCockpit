@@ -20,38 +20,16 @@
 #include "rxcpp/rx.hpp"
 #include "network_state_enums.h"
 
+
 /**
  * Oneliner description of class.
  *
  * Paragraph explaining how the class is used and what its purpose is in more detail.
  */
  //Class
+#include "steam/steamnetworkingsockets.h"
 #include <string>
-
-class NetworkController : private ISteamNetworkingSocketsCallbacks {
-
-public:
-
-protected:
-private:
-    rxcpp::subjects::subject<ConnectionState> connectionState;
-
-
-    //This will be called by the subclass Server constructor but never called by client.. Duh
-    //This will be blocking
-    void initServer();
-
-    //Connect to server at IP address
-    //This will be called by the client
-    //We need some mechanism for handling exceptions
-    //This will be blocking
-    void connectToServer(std::string address);
-
-    //Set by either client or server and will be IServerCallbacks or IClientCallbacks
-    virtual void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks) = 0;
-
-    INetworkControllerCallbacks* callback;
-};
+#include <map>
 
 class INetworkControllerCallbacks {
 public:
@@ -64,14 +42,53 @@ protected:
 private:
 };
 
+// FIXME:: remove example code
+// Only for plumbing sake for server
+struct Client_t
+{
+	std::string m_sNick;
+};
+
+class NetworkController : private ISteamNetworkingSocketsCallbacks {
+
+public:
+  NetworkController();
+  ~NetworkController();
+
+protected:
+private:
+<<<<<<< HEAD
+    rxcpp::subjects::subject<ConnectionState> connectionState;
+
+=======
+    HSteamNetConnection* m_hConnection;
+    ISteamNetworkingSockets* m_pInterface;
+    // FIXME: example properties
+	std::map< HSteamNetConnection, Client_t> m_mapClients;
+	HSteamListenSocket m_hListenSock;
+	HSteamNetPollGroup m_hPollGroup;
+    // FIXME:: needs to be evaluated
+>>>>>>> 33fbf51a936e3df60102e61ba5611cbaf5cc7a23
+
+    //This will be called by the subclass Server constructor but never called by client.. Duh
+    //This will be blocking
+    void initServer();
+
+    //Connect to server at IP address
+    //This will be called by the client
+    //We need some mechanism for handling exceptions
+    //This will be blocking
+    void connectToServer(std::string address);
 
 
-/**
- * One liner funciton description.
-*
-* Function description in a paragraph.
-*
-* @param parameter1 some comments
-* @param parameter2 some comments
-*/
-//Function
+    void PollConnectionStateChanges() { m_pInterface->RunCallbacks(this); }
+
+    //Set by either client or server and will be IServerCallbacks or IClientCallbacks
+    virtual void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks) = 0;
+
+    INetworkControllerCallbacks* callback;
+
+    void OnSteamNetConnectionStatusChanged( SteamNetConnectionStatusChangedCallback_t* pInfo) override;
+
+    bool isServer = true;
+};
