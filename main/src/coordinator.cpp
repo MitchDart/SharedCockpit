@@ -25,7 +25,7 @@
 #include <chrono>
 #include <fstream>
 #include "dataref.h"
-
+#include "network_controller/server.h"
 
 Coordinator::Coordinator(Environment* environment) {
     this->environment = environment;
@@ -39,7 +39,9 @@ void Coordinator::onStart() {
     this->flightRecorderController = new FlightRecorderController(this->environment);
     this->flightRecorderController->enableFlightRecorderWindow();
 
-    ConnectionManager* cm = new ConnectionManager();
+    Server* server = new Server(this->environment);
+
+    //ConnectionManager* cm = new ConnectionManager();
     //this->chatViewModel = new ChatViewModel(environment, "chat 1", cm);
     //this->chatViewModel2 = new ChatViewModel(environment, "chat 2", cm);
 

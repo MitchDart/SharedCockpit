@@ -37,5 +37,5 @@ class Peer {
 public:
 	// throws exceptions
 	virtual void sendMessage(void* message) = 0;
-	virtual void* pollMessage() = 0;
+	virtual void* retrieveMessage() = 0;
 };

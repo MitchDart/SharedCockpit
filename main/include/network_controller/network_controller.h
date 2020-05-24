@@ -52,12 +52,15 @@ struct Client_t
 class NetworkController : private ISteamNetworkingSocketsCallbacks {
 
 public:
-  NetworkController();
-  ~NetworkController();
+    NetworkController();
+    ~NetworkController();
 
 protected:
+    rxcpp::subjects::subject<ConnectionState>* connectionState;
+    
+    //Set by either client or server and will be IServerCallbacks or IClientCallbacks
+    void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks);
 private:
-    rxcpp::subjects::subject<ConnectionState> connectionState;
     HSteamNetConnection* m_hConnection;
     ISteamNetworkingSockets* m_pInterface;
     // FIXME: example properties
@@ -76,11 +79,7 @@ private:
     //This will be blocking
     void connectToServer(std::string address);
 
-
     void PollConnectionStateChanges() { m_pInterface->RunCallbacks(this); }
-
-    //Set by either client or server and will be IServerCallbacks or IClientCallbacks
-    virtual void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks) = 0;
 
     INetworkControllerCallbacks* callback;
 

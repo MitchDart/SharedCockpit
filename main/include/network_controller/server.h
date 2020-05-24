@@ -20,9 +20,11 @@
 #include "peer.h"
 #include <string>
 #include "steam/steamnetworkingsockets.h"
-#include "network_controller/network_controller.h"
+#include "network_controller.h"
+#include "server_window.h"
+#include "environment.h"
 
-class IServerCallbacks : protected INetworkControllerCallbacks {
+class IServerCallbacks : public INetworkControllerCallbacks {
 public:
 	virtual void onClientConntected(std::string ipAddress) = 0;
 protected:
@@ -34,12 +36,12 @@ protected:
 	void onConnectedToServer() override { }
 };
 
-class Server : Peer {
+class Server : public NetworkController, Peer {
 public:
 	/**
 	* Constructor will be responsible for initializating the server and begin listenening for connections.
 	**/
-	Server();
+	Server(Environment* environment);
 
 	/*
 	* Destroy connections and wrap up sever
@@ -50,14 +52,18 @@ public:
 	* Set callback delegate for connection events.
 	*/
 	void setServerCallbacks(IServerCallbacks* callbacks);
+
 	/*
 	* Disconnect client
 	*/
 	void disconnectClient();
+
+	void sendMessage(void* message) override;
+	void* retrieveMessage() override;
 protected:
 private:
- void sendMessage(void* message);
- void pollMessage(void* message);
-
+ //Pointer to server window
+ ServerWindow* serverWindow;
  IServerCallbacks* callbacks;
+ Environment* environment;
 };

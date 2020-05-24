@@ -19,10 +19,26 @@
 
 #include "network_controller/server.h"
 
-Server::Server() {}
+Server::Server(Environment* environment) : NetworkController() {
+    this->serverWindow = new ServerWindow(this->connectionState->get_observable());
+    this->environment->createWindow(this->serverWindow);
+}
 
 void Server::disconnectClient() {}
 
-void Server::setServerCallbacks(IServerCallbacks* callbacks) {}
+void Server::setServerCallbacks(IServerCallbacks* callbacks) {
+    this->setNetworkControllerCallbacks(callbacks);
+}
 
-Server::~Server() {}
+
+void Server::sendMessage(void* message) {
+    
+}
+
+void* Server::retrieveMessage() {
+    return 0;
+}
+
+Server::~Server() {
+    delete this->serverWindow;
+}

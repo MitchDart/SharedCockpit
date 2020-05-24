@@ -33,14 +33,20 @@ NetworkController::NetworkController() {
       }
     }).detach();
     */
-
+    this->connectionState = new rxcpp::subjects::subject<ConnectionState>();
 }
 
-NetworkController::~NetworkController() {}
+NetworkController::~NetworkController() {
+    delete this->connectionState;
+}
 
 void NetworkController::initServer() {}
 
 void NetworkController::connectToServer(std::string address) {}
+
+void NetworkController::setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks) {
+    this->callback = callbacks;
+}
 
 void NetworkController::OnSteamNetConnectionStatusChanged(
     SteamNetConnectionStatusChangedCallback_t* pInfo) {
