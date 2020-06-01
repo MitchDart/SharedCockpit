@@ -20,7 +20,14 @@
 #include "network_controller/server.h"
 
 Server::Server(Environment* environment) : NetworkController() {
+    // A call was made to this-> environment but the environment was not set
+    this->environment = environment;
+
     this->serverWindow = new ServerWindow(this->connectionState->get_observable());
+    this->serverWindow->setOnStartClick([]() {
+        std::cout << "Starting the server" << std::endl;
+    });
+
     this->environment->createWindow(this->serverWindow);
 }
 

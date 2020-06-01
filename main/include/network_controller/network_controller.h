@@ -17,7 +17,7 @@
 */
 
 #pragma once
-#include "rxcpp/rx.hpp"
+#include "rx.hpp"
 #include "network_state_enums.h"
 
 
