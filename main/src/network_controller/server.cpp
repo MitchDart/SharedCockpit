@@ -23,7 +23,7 @@
 Server::Server(Environment* environment) : NetworkController() {
     this->environment = environment;
     this->serverWindow = std::make_unique<ServerWindow>(ServerWindow(this->connectionState->get_observable()));
-    this->environment->createWindow(this->serverWindow);
+    this->environment->createWindow(this->serverWindow.get());
 
     //Initialize server connection state
     this->connectionState->get_subscriber().on_next(ConnectionState::NOT_CONNECTED);

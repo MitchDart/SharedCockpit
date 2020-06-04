@@ -73,15 +73,14 @@ protected:
     //This will be blocking
     void connectToServer(std::string address);
 private:
-    HSteamNetConnection* m_hConnection;
-    std::unique_ptr<HSteamNetConnection> m_hConnection;
+
     ISteamNetworkingSockets* steamNetworkingSockets;
     // FIXME: example properties
 	std::map< HSteamNetConnection, Client_t> m_mapClients;
 	HSteamNetPollGroup m_hPollGroup;
     // FIXME:: needs to be evaluated
 
-    void PollConnectionStateChanges() { m_pInterface->RunCallbacks(this); }
+    void PollConnectionStateChanges() { steamNetworkingSockets->RunCallbacks(this); }
 
     void OnSteamNetConnectionStatusChanged( SteamNetConnectionStatusChangedCallback_t* pInfo) override;
 

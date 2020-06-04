@@ -37,7 +37,7 @@ private:
 protected:
     void onDraw() override;
 public:
-    ServerWindow();
+    ServerWindow(rxcpp::observable<ConnectionState>& connectionState);
     void setOnStartClick(std::function< void()>&& onStartClicked);
     void setNetworkStateObserver(rxcpp::observable<ConnectionState>& connectionState);
 
