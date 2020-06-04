@@ -14,6 +14,7 @@
 #include <random>
 #include <string>
 #include <thread>
+#include <exception>
 
 NetworkController::NetworkController() {
   /* Creating a client and listen to a client's callbacks
@@ -40,7 +41,19 @@ NetworkController::~NetworkController() {
     delete this->connectionState;
 }
 
-void NetworkController::initServer() {}
+void NetworkController::initServer() {
+    //Construct steam networking sockets 
+    //TODO: Possibly move this to constructor
+    steamNetworkingSockets = SteamNetworkingSockets();
+
+    SteamNetworkingIPAddr serverLocalAddr;
+    serverLocalAddr.Clear();
+    serverLocalAddr.m_port = PORT;
+    steamListenSocket = steamNetworkingSockets->CreateListenSocketIP(serverLocalAddr, 0, nullptr);
+    if (steamListenSocket == k_HSteamListenSocket_Invalid) {
+        throw std::runtime_error("Unable to listen on port 27027");
+    }
+}
 
 void NetworkController::connectToServer(std::string address) {}
 
@@ -115,7 +128,7 @@ void NetworkController::OnSteamNetConnectionStatusChanged(
         // to finish up.  The reason information do not matter in this case,
         // and we cannot linger because it's already closed on the other end,
         // so we just pass 0's.
-        m_pInterface->CloseConnection(pInfo->m_hConn, 0, nullptr, false);
+        steamNetworkingSockets->CloseConnection(pInfo->m_hConn, 0, nullptr, false);
         break;
       }
 
@@ -132,11 +145,11 @@ void NetworkController::OnSteamNetConnectionStatusChanged(
         */
         // A client is attempting to connect
         // Try to accept the connection.
-        if (m_pInterface->AcceptConnection(pInfo->m_hConn) != k_EResultOK) {
+        if (steamNetworkingSockets->AcceptConnection(pInfo->m_hConn) != k_EResultOK) {
           // This could fail.  If the remote host tried to connect, but then
           // disconnected, the connection may already be half closed.  Just
           // destroy whatever we have on our side.
-          m_pInterface->CloseConnection(pInfo->m_hConn, 0, nullptr, false);
+          steamNetworkingSockets->CloseConnection(pInfo->m_hConn, 0, nullptr, false);
           /*
           todo: log messages
           ---------
@@ -146,9 +159,9 @@ void NetworkController::OnSteamNetConnectionStatusChanged(
         }
 
         // Assign the poll group
-        if (!m_pInterface->SetConnectionPollGroup(pInfo->m_hConn,
+        if (!steamNetworkingSockets->SetConnectionPollGroup(pInfo->m_hConn,
                                                   m_hPollGroup)) {
-          m_pInterface->CloseConnection(pInfo->m_hConn, 0, nullptr, false);
+          steamNetworkingSockets->CloseConnection(pInfo->m_hConn, 0, nullptr, false);
           /*
           todo: log messages
           ---------
@@ -233,8 +246,8 @@ void NetworkController::OnSteamNetConnectionStatusChanged(
     }
 
   } else {
-    assert(pInfo->m_hConn == m_hConnection ||
-           m_hConnection == k_HSteamNetConnection_Invalid);
+    //assert(pInfo->m_hConn == m_hConnection ||
+    //       (*m_hConnection) == k_HSteamNetConnection_Invalid);
 
     // What's the state of the connection?
     switch (pInfo->m_info.m_eState) {
@@ -286,7 +299,7 @@ void NetworkController::OnSteamNetConnectionStatusChanged(
         // to finish up.  The reason information do not matter in this case,
         // and we cannot linger because it's already closed on the other end,
         // so we just pass 0's.
-        m_pInterface->CloseConnection(pInfo->m_hConn, 0, nullptr, false);
+        steamNetworkingSockets->CloseConnection(pInfo->m_hConn, 0, nullptr, false);
         //m_hConnection = k_HSteamNetConnection_Invalid;
         break;
       }

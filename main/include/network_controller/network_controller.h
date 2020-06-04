@@ -28,6 +28,7 @@
  */
  //Class
 #include "steam/steamnetworkingsockets.h"
+#include "steam/steamnetworkingtypes.h"
 #include <string>
 #include <map>
 
@@ -60,14 +61,6 @@ protected:
     
     //Set by either client or server and will be IServerCallbacks or IClientCallbacks
     void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks);
-private:
-    HSteamNetConnection* m_hConnection;
-    ISteamNetworkingSockets* m_pInterface;
-    // FIXME: example properties
-	std::map< HSteamNetConnection, Client_t> m_mapClients;
-	HSteamListenSocket m_hListenSock;
-	HSteamNetPollGroup m_hPollGroup;
-    // FIXME:: needs to be evaluated
 
     //This will be called by the subclass Server constructor but never called by client.. Duh
     //This will be blocking
@@ -78,6 +71,13 @@ private:
     //We need some mechanism for handling exceptions
     //This will be blocking
     void connectToServer(std::string address);
+private:
+    HSteamNetConnection* m_hConnection;
+    ISteamNetworkingSockets* steamNetworkingSockets;
+    // FIXME: example properties
+	std::map< HSteamNetConnection, Client_t> m_mapClients;
+	HSteamNetPollGroup m_hPollGroup;
+    // FIXME:: needs to be evaluated
 
     void PollConnectionStateChanges() { m_pInterface->RunCallbacks(this); }
 
@@ -86,4 +86,8 @@ private:
     void OnSteamNetConnectionStatusChanged( SteamNetConnectionStatusChangedCallback_t* pInfo) override;
 
     bool isServer = true;
+
+    //Server stuff for now
+    const uint16 PORT = 27027;
+    HSteamListenSocket steamListenSocket;
 };

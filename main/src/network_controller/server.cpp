@@ -20,8 +20,18 @@
 #include "network_controller/server.h"
 
 Server::Server(Environment* environment) : NetworkController() {
+    this->environment = environment;
     this->serverWindow = new ServerWindow(this->connectionState->get_observable());
     this->environment->createWindow(this->serverWindow);
+
+    //Initialize server connection state
+    this->connectionState->get_subscriber().on_next(ConnectionState::NOT_CONNECTED);
+
+    //Connect window listeners
+    this->serverWindow->setOnStartClick([&]() {
+        //Start the server
+        this->initServer();
+    });
 }
 
 void Server::disconnectClient() {}

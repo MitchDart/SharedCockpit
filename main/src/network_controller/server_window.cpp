@@ -20,6 +20,9 @@
 #include "network_controller/server_window.h"
 
 ServerWindow::ServerWindow(rxcpp::observable<ConnectionState>& connectionState) : ImguiWindow("Start a server", 0, 0, 200, 200) {
+	//Initialize listeners
+	this->onStartClicked = []() {};
+
 	connectionState.subscribe([&](ConnectionState value) {
 		this->connectionState = value;
 	});
