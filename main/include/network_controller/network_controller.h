@@ -58,7 +58,7 @@ public:
     ~NetworkController();
 
 protected:
-    std::shared_ptr<rxcpp::subjects::subject<ConnectionState>> connectionState;
+    rxcpp::subjects::subject<ConnectionState>* connectionState;
 
     //Set by either client or server and will be IServerCallbacks or IClientCallbacks
     void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks);
@@ -95,4 +95,6 @@ private:
 
     // we are not going to take ownership of the pointer
     INetworkControllerCallbacks* callback;
+
+    static void log(ESteamNetworkingSocketsDebugOutputType debugOutputType, const char* message);
 };

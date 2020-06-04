@@ -1,5 +1,7 @@
 #include "network_controller/network_controller.h"
 
+#include <steam/isteamnetworkingutils.h>
+
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -17,34 +19,31 @@
 #include <exception>
 
 NetworkController::NetworkController() {
-  /* Creating a client and listen to a client's callbacks
+    //Initialize members
+    this->connectionState = new rxcpp::subjects::subject<ConnectionState>();
 
-    m_hConnection = connectionManager->steamSockets->ConnectByIPAddress(
-        connectionManager->steamServerConnection, 0, nullptr);
-    m_pInterface = connectionManager->steamSockets;
+    //Utility setup
+    SteamNetworkingUtils()->SetDebugOutputFunction(k_ESteamNetworkingSocketsDebugOutputType_Msg, log);
 
-    if (m_hConnection == k_HSteamNetConnection_Invalid)
-      FireAndForget("Failed to create connection");
-
-    // Using a pretty nifty task of abstraction
-    std::thread([&]() {
-      for (;;) {
-        this->Run();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-      }
-    }).detach();
-    */
-    this->connectionState = std::make_unique<rxcpp::subjects::subject<ConnectionState>>();
+    //Construct GNS
+    SteamDatagramErrMsg errorMessage;
+    if (!GameNetworkingSockets_Init(nullptr, errorMessage))
+         throw std::runtime_error(("GameNetworkingSockets_Init failed.  %s", errorMessage));
 }
 
 NetworkController::~NetworkController() {
+    //Close all current connections and cleanup
+    GameNetworkingSockets_Kill();
+    delete this->connectionState;
+}
 
-    // delete this->connectionState;
+void NetworkController::log(ESteamNetworkingSocketsDebugOutputType debugOutputType, const char* message) {
+    //TODO: Show logs in a window with the logtype.
+    std::cout << message << std::endl;
 }
 
 void NetworkController::initServer() {
-    //Construct steam networking sockets 
-    //TODO: Possibly move this to constructor
+    //Retrieve correct pointer from GNS
     steamNetworkingSockets = SteamNetworkingSockets();
 
     SteamNetworkingIPAddr serverLocalAddr;
@@ -62,8 +61,7 @@ void NetworkController::setNetworkControllerCallbacks(INetworkControllerCallback
     this->callback = callbacks;
 }
 
-void NetworkController::OnSteamNetConnectionStatusChanged(
-    SteamNetConnectionStatusChangedCallback_t* pInfo) {
+void NetworkController::OnSteamNetConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t* pInfo) {
   if (isServer) {
     char temp[1024];
 

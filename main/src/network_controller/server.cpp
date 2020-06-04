@@ -22,8 +22,8 @@
 
 Server::Server(Environment* environment) : NetworkController() {
     this->environment = environment;
-    this->serverWindow = std::make_unique<ServerWindow>(ServerWindow(this->connectionState->get_observable()));
-    this->environment->createWindow(this->serverWindow.get());
+    this->serverWindow = new ServerWindow(this->connectionState->get_observable());
+    this->environment->createWindow(this->serverWindow);
 
     //Initialize server connection state
     this->connectionState->get_subscriber().on_next(ConnectionState::NOT_CONNECTED);
@@ -40,7 +40,7 @@ Server::Server(Environment* environment) : NetworkController() {
     // post initial value
     this->connectionState->get_subscriber().on_next(ConnectionState::NOT_CONNECTED);
 
-    this->environment->createWindow(this->serverWindow.get());
+    this->environment->createWindow(this->serverWindow);
 }
 
 void Server::disconnectClient() {}

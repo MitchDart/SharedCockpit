@@ -19,7 +19,6 @@
 #pragma once
 #include "peer.h"
 #include <string>
-#include <memory>
 #include "steam/steamnetworkingsockets.h"
 #include "network_controller.h"
 #include "server_window.h"
@@ -64,7 +63,7 @@ public:
 protected:
 private:
  //Pointer to server window
- std::unique_ptr<IServerCallbacks> callbacks;
- std::shared_ptr<ServerWindow> serverWindow;
+ IServerCallbacks* callbacks;
+ ServerWindow* serverWindow;
  Environment* environment;
 };
