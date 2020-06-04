@@ -18,4 +18,4 @@
 
 #pragma once
 
-enum ConnectionState { NOT_CONNECTED, CONNECTING, CONNECTED };
+enum class ConnectionState { NOT_CONNECTED, CONNECTING, CONNECTED };

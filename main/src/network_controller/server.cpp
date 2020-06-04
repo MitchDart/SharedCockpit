@@ -18,23 +18,33 @@
  */
 
 #include "network_controller/server.h"
+#include <memory>
 
 Server::Server(Environment* environment) : NetworkController() {
     // A call was made to this-> environment but the environment was not set
     this->environment = environment;
 
-    this->serverWindow = new ServerWindow(this->connectionState->get_observable());
+	this->serverWindow = std::make_unique<ServerWindow>(ServerWindow());
+    // set observer -- for some reason imgui calls the destructor right after creation
+    this->serverWindow->setNetworkStateObserver(this->connectionState->get_observable());
+
+    // post initial value
+    this->connectionState->get_subscriber().on_next(ConnectionState::NOT_CONNECTED);
+
+    // set server click listeners
     this->serverWindow->setOnStartClick([]() {
         std::cout << "Starting the server" << std::endl;
     });
 
-    this->environment->createWindow(this->serverWindow);
+    // hand over window to be drawn
+    std::cout << "Handing over server window" << std::endl;
+    this->environment->createWindow(this->serverWindow.get());
 }
 
 void Server::disconnectClient() {}
 
-void Server::setServerCallbacks(IServerCallbacks* callbacks) {
-    this->setNetworkControllerCallbacks(callbacks);
+void Server::setServerCallbacks(std::shared_ptr<IServerCallbacks> callbacks) {
+    this->setNetworkControllerCallbacks(callbacks.get());
 }
 
 
@@ -47,5 +57,7 @@ void* Server::retrieveMessage() {
 }
 
 Server::~Server() {
-    delete this->serverWindow;
+    // because of smart pointers the server window will be destroyed when the Server scope is destroyed
+    // delete this->serverWindow;
+    std::cout << "Killing server" << std::endl;
 }

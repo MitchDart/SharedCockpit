@@ -19,6 +19,7 @@
 #pragma once
 #include "peer.h"
 #include <string>
+#include <memory>
 #include "steam/steamnetworkingsockets.h"
 #include "network_controller.h"
 #include "server_window.h"
@@ -51,7 +52,7 @@ public:
 	/*
 	* Set callback delegate for connection events.
 	*/
-	void setServerCallbacks(IServerCallbacks* callbacks);
+	void setServerCallbacks(std::shared_ptr<IServerCallbacks> callbacks);
 
 	/*
 	* Disconnect client
@@ -63,7 +64,7 @@ public:
 protected:
 private:
  //Pointer to server window
- ServerWindow* serverWindow;
- IServerCallbacks* callbacks;
+ std::unique_ptr<IServerCallbacks> callbacks;
+ std::shared_ptr<ServerWindow> serverWindow;
  Environment* environment;
 };

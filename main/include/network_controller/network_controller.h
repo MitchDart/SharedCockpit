@@ -30,6 +30,7 @@
 #include "steam/steamnetworkingsockets.h"
 #include <string>
 #include <map>
+#include <memory>
 
 class INetworkControllerCallbacks {
 public:
@@ -56,15 +57,21 @@ public:
     ~NetworkController();
 
 protected:
-    rxcpp::subjects::subject<ConnectionState>* connectionState;
-    
+    std::shared_ptr<rxcpp::subjects::subject<ConnectionState>> connectionState;
+
     //Set by either client or server and will be IServerCallbacks or IClientCallbacks
     void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks);
 private:
-    HSteamNetConnection* m_hConnection;
+    // taking ownership of our networking interface and connection
+    std::unique_ptr<HSteamNetConnection> m_hConnection;
     ISteamNetworkingSockets* m_pInterface;
+
+    // we are not going to take ownership of the pointer
+    INetworkControllerCallbacks* callback;
+
     // FIXME: example properties
-	std::map< HSteamNetConnection, Client_t> m_mapClients;
+	std::map<HSteamNetConnection, Client_t> m_mapClients;
+
 	HSteamListenSocket m_hListenSock;
 	HSteamNetPollGroup m_hPollGroup;
     // FIXME:: needs to be evaluated
@@ -80,8 +87,6 @@ private:
     void connectToServer(std::string address);
 
     void PollConnectionStateChanges() { m_pInterface->RunCallbacks(this); }
-
-    INetworkControllerCallbacks* callback;
 
     void OnSteamNetConnectionStatusChanged( SteamNetConnectionStatusChangedCallback_t* pInfo) override;
 

@@ -19,27 +19,40 @@
 #pragma once
 #include "network_controller/server_window.h"
 
-ServerWindow::ServerWindow(rxcpp::observable<ConnectionState>& connectionState) : ImguiWindow("Start a server", 0, 0, 200, 200) {
-	connectionState.subscribe([&](ConnectionState value) {
-		this->connectionState = value;
-	});
+ServerWindow::ServerWindow() : ImguiWindow("Start a server", 0, 0, 200, 200) {
+	// THIS IS ABSURD
+	std::cout << " constructing "<< this->getName() << std::endl;
 }
 
 void ServerWindow::onDraw() {
-	if (connectionState == ConnectionState::NOT_CONNECTED) {
+	if (this->connectionState == ConnectionState::NOT_CONNECTED) {
 		ImGui::Text("Click on start to host a server.");
 		if (ImGui::Button("Start")) {
 			this->onStartClicked();
 		}
 	}
-	else if (connectionState == ConnectionState::CONNECTING) {
+	else if (this->connectionState == ConnectionState::CONNECTING) {
 		ImGui::Text("Connecting...");
 	}
-	else if (connectionState == ConnectionState::CONNECTED) {
+	else if (this->connectionState == ConnectionState::CONNECTED) {
 		ImGui::Text("Connected");
 	}
+	else {
+		ImGui::Text("No connection to report");
+	}
+}
+
+void ServerWindow::setNetworkStateObserver(rxcpp::observable<ConnectionState>& connectionState){
+	connectionState.subscribe([&](ConnectionState value) {
+		this->connectionState = value;
+	});
 }
 
 void ServerWindow::setOnStartClick(std::function< void()>&& onStartClicked) {
 	this->onStartClicked = onStartClicked;
+}
+
+ServerWindow::~ServerWindow() {
+	// THIS IS ABSURD
+	std::cout << "Destructing " << this->getName() << std::endl;
 }

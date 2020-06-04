@@ -20,6 +20,7 @@
 #include "imgui_window.h"
 #include <string>
 #include <functional>
+#include <memory>
 #include "imgui.h"
 #include "rx.hpp"
 #include "network_state_enums.h"
@@ -36,6 +37,9 @@ private:
 protected:
     void onDraw() override;
 public:
-    ServerWindow(rxcpp::observable<ConnectionState>& connectionState);
+    ServerWindow();
     void setOnStartClick(std::function< void()>&& onStartClicked);
+    void setNetworkStateObserver(rxcpp::observable<ConnectionState>& connectionState);
+
+    ~ServerWindow();
 };
