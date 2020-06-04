@@ -34,11 +34,12 @@ NetworkController::NetworkController() {
       }
     }).detach();
     */
-    this->connectionState = new rxcpp::subjects::subject<ConnectionState>();
+    this->connectionState = std::make_unique<rxcpp::subjects::subject<ConnectionState>>();
 }
 
 NetworkController::~NetworkController() {
-    delete this->connectionState;
+
+    // delete this->connectionState;
 }
 
 void NetworkController::initServer() {
@@ -246,8 +247,10 @@ void NetworkController::OnSteamNetConnectionStatusChanged(
     }
 
   } else {
-    //assert(pInfo->m_hConn == m_hConnection ||
-    //       (*m_hConnection) == k_HSteamNetConnection_Invalid);
+  /*
+    assert(pInfo->m_hConn == m_hConnection ||
+           m_hConnection == k_HSteamNetConnection_Invalid);
+           */
 
     // What's the state of the connection?
     switch (pInfo->m_info.m_eState) {

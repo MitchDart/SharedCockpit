@@ -43,3 +43,7 @@ tool in a directory that is wasy to access and or adding its pwd to the machine
     command as thhe instructions will give a variable to pipe in to the cmake command so that 
     the build system know where to find the modules installed by the vcpkg tool.
 
+# Packages required
+
+    * rxcpp
+    * protobuff

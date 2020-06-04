@@ -17,7 +17,7 @@
 */
 
 #pragma once
-#include "rxcpp/rx.hpp"
+#include "rx.hpp"
 #include "network_state_enums.h"
 
 
@@ -31,6 +31,7 @@
 #include "steam/steamnetworkingtypes.h"
 #include <string>
 #include <map>
+#include <memory>
 
 class INetworkControllerCallbacks {
 public:
@@ -57,8 +58,8 @@ public:
     ~NetworkController();
 
 protected:
-    rxcpp::subjects::subject<ConnectionState>* connectionState;
-    
+    std::shared_ptr<rxcpp::subjects::subject<ConnectionState>> connectionState;
+
     //Set by either client or server and will be IServerCallbacks or IClientCallbacks
     void setNetworkControllerCallbacks(INetworkControllerCallbacks* callbacks);
 
@@ -73,6 +74,7 @@ protected:
     void connectToServer(std::string address);
 private:
     HSteamNetConnection* m_hConnection;
+    std::unique_ptr<HSteamNetConnection> m_hConnection;
     ISteamNetworkingSockets* steamNetworkingSockets;
     // FIXME: example properties
 	std::map< HSteamNetConnection, Client_t> m_mapClients;
@@ -81,8 +83,6 @@ private:
 
     void PollConnectionStateChanges() { m_pInterface->RunCallbacks(this); }
 
-    INetworkControllerCallbacks* callback;
-
     void OnSteamNetConnectionStatusChanged( SteamNetConnectionStatusChangedCallback_t* pInfo) override;
 
     bool isServer = true;
@@ -90,4 +90,10 @@ private:
     //Server stuff for now
     const uint16 PORT = 27027;
     HSteamListenSocket steamListenSocket;
+
+    // taking ownership of our networking interface and connection
+    std::unique_ptr<HSteamNetConnection> m_hConnection;
+
+    // we are not going to take ownership of the pointer
+    INetworkControllerCallbacks* callback;
 };
