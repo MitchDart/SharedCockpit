@@ -20,8 +20,7 @@
 #include "network_controller/server.h"
 #include <memory>
 
-Server::Server(Environment* environment) : NetworkController() {
-    this->environment = environment;
+Server::Server(Environment* environment) : NetworkController(environment) {
     this->serverWindow = new ServerWindow(this->connectionState->get_observable());
     this->environment->createWindow(this->serverWindow);
 
@@ -33,12 +32,6 @@ Server::Server(Environment* environment) : NetworkController() {
         //Start the server
         this->initServer();
     });
-
-    // set observer -- for some reason imgui calls the destructor right after creation
-    this->serverWindow->setNetworkStateObserver(this->connectionState->get_observable());
-
-    // post initial value
-    this->connectionState->get_subscriber().on_next(ConnectionState::NOT_CONNECTED);
 
     this->environment->createWindow(this->serverWindow);
 }
@@ -59,7 +52,5 @@ void* Server::retrieveMessage() {
 }
 
 Server::~Server() {
-    // because of smart pointers the server window will be destroyed when the Server scope is destroyed
-    // delete this->serverWindow;
-    std::cout << "Killing server" << std::endl;
+    this->environment->logger->AddLog("[info] Shutting down server");
 }

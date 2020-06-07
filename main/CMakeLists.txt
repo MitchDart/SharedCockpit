@@ -33,7 +33,8 @@ add_library(main
 	"include/frames.h"
 	"include/imgui_window.h"
 	"include/utils.h"
-
+    "include/imgui_logger.h"
+	
 	"src/coordinator.cpp"
 	"src/dataref.cpp"
 	"src/first_window.cpp"
@@ -47,7 +48,8 @@ add_library(main
 	"src/network_controller/network_controller.cpp"
 	"src/network_controller/client_window.cpp"
 	"src/network_controller/server_window.cpp"
-)
+	"src/imgui_logger.cpp"
+  )
 
 include_directories(include include/chat)
 

@@ -115,3 +115,6 @@ void XPlaneEnvironment::mainLoop() {
 
     this->rlp->dispatch();
 }
+
+// setting up the logger
+ImguiLogger* Environment::logger = new ImguiLogger();

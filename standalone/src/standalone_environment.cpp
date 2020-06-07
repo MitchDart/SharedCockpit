@@ -94,6 +94,9 @@ void StandaloneEnvironment::mainLoop()
         ImGui::End();
     }
 
+    // drawing the log windows without conditional atm
+    Environment::logger->onDraw();
+
     //Check if simulation file is loaded
     if (this->recordingFile != 0) {
         std::string line = "";
@@ -168,3 +171,6 @@ void StandaloneEnvironment::restartSimulation() {
 
     this->frameCounter = 0;
 }
+
+// setting up the logger
+ImguiLogger* Environment::logger = new ImguiLogger();

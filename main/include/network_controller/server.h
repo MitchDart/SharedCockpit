@@ -36,7 +36,7 @@ protected:
 	void onConnectedToServer() override { }
 };
 
-class Server : public NetworkController, Peer {
+class Server : protected NetworkController, Peer {
 public:
 	/**
 	* Constructor will be responsible for initializating the server and begin listenening for connections.
@@ -65,5 +65,4 @@ private:
  //Pointer to server window
  IServerCallbacks* callbacks;
  ServerWindow* serverWindow;
- Environment* environment;
 };

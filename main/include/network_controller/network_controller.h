@@ -19,6 +19,7 @@
 #pragma once
 #include "rx.hpp"
 #include "network_state_enums.h"
+#include "include\environment.h"
 
 
 /**
@@ -54,10 +55,11 @@ struct Client_t
 class NetworkController : private ISteamNetworkingSocketsCallbacks {
 
 public:
-    NetworkController();
+    NetworkController(Environment* environment);
     ~NetworkController();
 
 protected:
+    Environment* environment;
     rxcpp::subjects::subject<ConnectionState>* connectionState;
 
     //Set by either client or server and will be IServerCallbacks or IClientCallbacks

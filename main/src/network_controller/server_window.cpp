@@ -46,12 +46,6 @@ void ServerWindow::onDraw() {
 	}
 }
 
-void ServerWindow::setNetworkStateObserver(rxcpp::observable<ConnectionState>& connectionState){
-	connectionState.subscribe([&](ConnectionState value) {
-		this->connectionState = value;
-	});
-}
-
 void ServerWindow::setOnStartClick(std::function< void()>&& onStartClicked) {
 	this->onStartClicked = onStartClicked;
 }

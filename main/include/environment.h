@@ -23,6 +23,7 @@
 #include <functional>
 #include "frames.h"
 #include "dataref.h"
+#include <imgui_logger.h>
 
 /** 
  * Abstract environment representing a runtime environment
@@ -35,7 +36,9 @@
 class Environment {
     protected:
     public:
-        Environment(rxcpp::schedulers::run_loop* rlp) { this->rlp = rlp; }
+        Environment(rxcpp::schedulers::run_loop* rlp) { 
+            this->rlp = rlp; 
+        }
 
         /** 
         * Creates a ImguiWindow to display
@@ -70,6 +73,8 @@ class Environment {
 
         virtual void onLaunch() = 0;
         virtual void onExit() = 0;
+
+        static ImguiLogger* logger;
 
         rxcpp::schedulers::run_loop* rlp;
     private:

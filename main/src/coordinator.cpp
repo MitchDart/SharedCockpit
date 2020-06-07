@@ -40,11 +40,6 @@ void Coordinator::onStart() {
     this->flightRecorderController->enableFlightRecorderWindow();
 
     Server* server = new Server(this->environment);
-
-    //ConnectionManager* cm = new ConnectionManager();
-    //this->chatViewModel = new ChatViewModel(environment, "chat 1", cm);
-    //this->chatViewModel2 = new ChatViewModel(environment, "chat 2", cm);
-
 }
 
 void Coordinator::onStop() {

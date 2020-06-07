@@ -37,8 +37,6 @@ class Coordinator {
         //Controllers
         FlightRecorderController* flightRecorderController;
 
-        ChatViewModel* chatViewModel;
-        ChatViewModel* chatViewModel2;
     protected:
     public:
         /** 

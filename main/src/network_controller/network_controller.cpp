@@ -18,8 +18,9 @@
 #include <thread>
 #include <exception>
 
-NetworkController::NetworkController() {
+NetworkController::NetworkController(Environment* environment) {
     //Initialize members
+    this->environment = environment;
     this->connectionState = new rxcpp::subjects::subject<ConnectionState>();
 
     //Utility setup
@@ -27,8 +28,10 @@ NetworkController::NetworkController() {
 
     //Construct GNS
     SteamDatagramErrMsg errorMessage;
-    if (!GameNetworkingSockets_Init(nullptr, errorMessage))
-         throw std::runtime_error(("GameNetworkingSockets_Init failed.  %s", errorMessage));
+    if (!GameNetworkingSockets_Init(nullptr, errorMessage)) {
+       Environment::logger->AddLog(("GameNetworkingSockets_Init failed.  %s", errorMessage));
+       // throw std::runtime_error(("GameNetworkingSockets_Init failed.  %s", errorMessage));
+    }
 }
 
 NetworkController::~NetworkController() {
@@ -39,7 +42,69 @@ NetworkController::~NetworkController() {
 
 void NetworkController::log(ESteamNetworkingSocketsDebugOutputType debugOutputType, const char* message) {
     //TODO: Show logs in a window with the logtype.
-    std::cout << message << std::endl;
+
+    // Something frustrating to take note of, we will have to make the logger static if we want to use
+    //  it in this context for now I am handeling it as a memebr but this might have to change
+    std::string formatted;
+
+    switch (debugOutputType)
+    {
+
+    case k_ESteamNetworkingSocketsDebugOutputType_None: {
+        formatted += "[no error]";
+		break;
+    }
+    // You used the API incorrectly, or an internal error happened
+    case k_ESteamNetworkingSocketsDebugOutputType_Bug: {
+        formatted += "[interntal]";
+		break;
+    } 
+    // Run-time error condition that isn't the result of a bug.  (E.g. we are offline, cannot bind a port, etc)
+    case k_ESteamNetworkingSocketsDebugOutputType_Error: {
+        formatted += "[runtime]";
+		break;
+    } 
+    // Nothing is wrong, but this is an important notification
+    case k_ESteamNetworkingSocketsDebugOutputType_Important: {
+        formatted += "[notification]";
+		break;
+    }
+    case k_ESteamNetworkingSocketsDebugOutputType_Warning: {
+        formatted += "[warning]";
+		break;
+    }
+    // Recommended amount
+    case k_ESteamNetworkingSocketsDebugOutputType_Msg: {
+        formatted += "[message]";
+		break;
+    }
+    // Quite a bit
+    case k_ESteamNetworkingSocketsDebugOutputType_Verbose: {
+        formatted += "[verbose]";
+		break;
+    }
+    // Practically everything
+    case k_ESteamNetworkingSocketsDebugOutputType_Debug: {
+        formatted += "[debugging]";
+		break;
+    }
+    // Wall of text, detailed packet contents breakdown, etc
+    case k_ESteamNetworkingSocketsDebugOutputType_Everything: {
+        formatted += "[packet content]";
+        break;
+    } 
+
+    case k_ESteamNetworkingSocketsDebugOutputType__Force32Bit: {
+    }
+
+    default:
+        break;
+    }
+
+    formatted += " ";
+    formatted += message;
+    formatted += "\n";
+    Environment::logger->AddLog(formatted.c_str());
 }
 
 void NetworkController::initServer() {
@@ -51,7 +116,9 @@ void NetworkController::initServer() {
     serverLocalAddr.m_port = PORT;
     steamListenSocket = steamNetworkingSockets->CreateListenSocketIP(serverLocalAddr, 0, nullptr);
     if (steamListenSocket == k_HSteamListenSocket_Invalid) {
-        throw std::runtime_error("Unable to listen on port 27027");
+        Environment::logger->AddLog("Unable to listen on port %d\n", PORT);
+        // TODO:: Gracefully handle port errors
+        //throw std::runtime_error("Unable to listen on port 27027");
     }
 }
 
