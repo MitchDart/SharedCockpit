@@ -74,4 +74,6 @@ class StandaloneEnvironment : public Environment
 
         void onLaunch() override;
         void onExit() override;
+        Consumer<EVENT_INFO> consumerOne;
+        Consumer<EVENT_INFO> consumerTwo;
 };

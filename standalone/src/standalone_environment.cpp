@@ -25,11 +25,18 @@
 #include "utils.h"
 
 StandaloneEnvironment::StandaloneEnvironment(rxcpp::schedulers::run_loop *rlp)
-    : Environment(rlp) {
+    : Environment(rlp), consumerOne("one"), consumerTwo("two") {
     //Create standalone window
     this->standAloneWindow = new StandaloneWindow("Standalone Simulation", 500, 200, 0, 0);
     this->createWindow(this->standAloneWindow);
-    this->standAloneWindow->setOnSimulationRestartListener([&]() {
+    this->standAloneWindow->setOnSimulationRestartListener([=]() {
+        static int test = 0;
+        Producer<EVENT_INFO> producerOne("first");
+        EVENT_INFO event;
+        event.id = test; 
+        test += 1;
+        event.description = "Some cool name";
+        producerOne.Emmit(event, &standaloneBus);
         this->restartSimulation();
     });
 }
@@ -95,7 +102,7 @@ void StandaloneEnvironment::mainLoop()
     }
 
     // drawing the log windows without conditional atm
-    Environment::logger->onDraw();
+    // Environment::logger->onDraw();
 
     //Check if simulation file is loaded
     if (this->recordingFile != 0) {
@@ -145,7 +152,11 @@ void StandaloneEnvironment::mainLoop()
 }
 
 void StandaloneEnvironment::onLaunch() {
+    standaloneBus.AddConsumer(consumerOne);
+    standaloneBus.AddConsumer(consumerTwo);
+
 }
+
 void StandaloneEnvironment::onExit() {
     if (this->recordingFile != 0 && this->recordingFile->is_open()) {
         this->recordingFile->close();

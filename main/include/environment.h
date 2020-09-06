@@ -24,6 +24,7 @@
 #include "frames.h"
 #include "dataref.h"
 #include <imgui_logger.h>
+#include <EventBus\EventBus.cpp>
 
 /** 
  * Abstract environment representing a runtime environment
@@ -77,5 +78,7 @@ class Environment {
         static ImguiLogger* logger;
 
         rxcpp::schedulers::run_loop* rlp;
+        EventBus<EVENT_INFO> standaloneBus;
+
     private:
 };

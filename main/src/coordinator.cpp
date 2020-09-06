@@ -33,16 +33,17 @@ Coordinator::Coordinator(Environment* environment) {
 
 void Coordinator::onStart() {
     //Create first window
-    const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200);
-    this->environment->createWindow(firstWindow);
+    // const auto firstWindow = new FirstWindow("My first window", 200,200, 200,200);
+    // this->environment->createWindow(firstWindow);
 
-    this->flightRecorderController = new FlightRecorderController(this->environment);
-    this->flightRecorderController->enableFlightRecorderWindow();
+    // this->flightRecorderController = new FlightRecorderController(this->environment);
+    // this->flightRecorderController->enableFlightRecorderWindow();
 
-    Server* server = new Server(this->environment);
+    // Server* server = new Server(this->environment);
 }
 
 void Coordinator::onStop() {
-    this->flightRecorderController->disableFlightRecorderWindow();
-    delete this->flightRecorderController;
+    // this->flightRecorderController->disableFlightRecorderWindow();
+    // delete this->flightRecorderController;
 }
+
