@@ -23,22 +23,19 @@
 #include <type_traits>
 #include <chrono>
 #include "utils.h"
+#include "chat/chat_view_model.h"
 
 StandaloneEnvironment::StandaloneEnvironment(rxcpp::schedulers::run_loop *rlp)
-    : Environment(rlp), consumerOne("one"), consumerTwo("two") {
+    : Environment(rlp, new EventBus<CHAT_EVENT>) {
     //Create standalone window
     this->standAloneWindow = new StandaloneWindow("Standalone Simulation", 500, 200, 0, 0);
     this->createWindow(this->standAloneWindow);
     this->standAloneWindow->setOnSimulationRestartListener([=]() {
-        static int test = 0;
-        Producer<EVENT_INFO> producerOne("first");
-        EVENT_INFO event;
-        event.id = test; 
-        test += 1;
-        event.description = "Some cool name";
-        producerOne.Emmit(event, &standaloneBus);
         this->restartSimulation();
     });
+
+    this->chatViewModel = new ChatViewModel("Chat viewModel", chatEventBus);
+    this->createWindow(this->chatViewModel->chatWindow);
 }
 
 StandaloneEnvironment::~StandaloneEnvironment()
@@ -152,9 +149,6 @@ void StandaloneEnvironment::mainLoop()
 }
 
 void StandaloneEnvironment::onLaunch() {
-    standaloneBus.AddConsumer(consumerOne);
-    standaloneBus.AddConsumer(consumerTwo);
-
 }
 
 void StandaloneEnvironment::onExit() {

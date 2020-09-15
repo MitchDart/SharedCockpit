@@ -24,7 +24,8 @@
 #include "frames.h"
 #include "dataref.h"
 #include <imgui_logger.h>
-#include <EventBus\EventBus.cpp>
+#include <EventBus\EventBus.hpp>
+#include <chat/chat_client.hpp>
 
 /** 
  * Abstract environment representing a runtime environment
@@ -37,8 +38,9 @@
 class Environment {
     protected:
     public:
-        Environment(rxcpp::schedulers::run_loop* rlp) { 
+        Environment(rxcpp::schedulers::run_loop* rlp, EventBus<CHAT_EVENT>*  eventBus) { 
             this->rlp = rlp; 
+            this->chatEventBus = eventBus;
         }
 
         /** 
@@ -78,7 +80,7 @@ class Environment {
         static ImguiLogger* logger;
 
         rxcpp::schedulers::run_loop* rlp;
-        EventBus<EVENT_INFO> standaloneBus;
+        EventBus<CHAT_EVENT>* chatEventBus;
 
     private:
 };

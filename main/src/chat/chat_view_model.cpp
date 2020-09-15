@@ -47,15 +47,16 @@ struct IntervalRepeater {
   }
 };
 
-ChatViewModel::ChatViewModel(Environment* environment, std::string name,
-                             ConnectionManager* connectionManager) {
-  this->connectionManager = connectionManager;
-  this->environment = environment;
+ChatViewModel::ChatViewModel(std::string name, EventBus<CHAT_EVENT>* chatEventBus) : chatConsumer("Chat view model consumer", 
+        [=] (CHAT_EVENT value){
+            (chatWindow->messages).push_back(value.message); 
+        }
+) {
   // The connection manager have got everything needed to make a chat client
   // todo:: make it so that I can get network events from more than ons connection... or rethink how I send messages 
   // --- the issue is that the newest observer of network state overrides the old one and the steam networking sockets
   // --- class is a static class, so its a bit of a hassle
-  this->chatClient = new ChatClient(this->connectionManager);
+  this->chatClient = new ChatClient(new ConnectionManager(), chatEventBus);
 
   // --- The basic chat class is self contained, needs work on managing dropping the connection
   // --- atm a thread spawns and detatches itself in the constructor, this is the polling of the server for messages.
@@ -68,17 +69,11 @@ ChatViewModel::ChatViewModel(Environment* environment, std::string name,
           this->chatClient->SendMessage(message); 
       });
 
+
   // handle messages from the chat server -- passing them down to the view
   // todo:: implement the active object pattern with more details at this moment its just 
   // a proxy with a passthrough and a logger
-  this->chatClient->GetObservable()
-      .subscribe_on(rxcpp::observe_on_run_loop(*(environment->rlp)))
-      .subscribe(
-          [=](string value) { 
-              (chatWindow->messages).push_back(value); 
-          });
+  chatEventBus->AddConsumer(chatConsumer);
 
-  // create a window in the active
-  this->environment->createWindow(this->chatWindow);
 }
 

@@ -35,7 +35,6 @@ add_library(main
 	"include/utils.h"
     "include/imgui_logger.h"
 	
-	"include/EventBus/EventBus.cpp"
 
 	"src/coordinator.cpp"
 	"src/dataref.cpp"
@@ -51,7 +50,8 @@ add_library(main
 	"src/network_controller/client_window.cpp"
 	"src/network_controller/server_window.cpp"
 	"src/imgui_logger.cpp"
-   "include/chat/chat_events.h" "include/EventBus/EventBus.cpp")
+   "include/chat/chat_events.h"
+   )
 
 include_directories(include include/chat)
 

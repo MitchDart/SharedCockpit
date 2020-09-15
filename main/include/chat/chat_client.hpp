@@ -13,48 +13,38 @@
 #include <string>
 #include <thread>
 
+#pragma once
+
 #include "chat/connection_manager.h"
 #include "steam/steamnetworkingsockets.h"
+#include "EventBus/EventBus.hpp"
 
-#pragma once
 
 using namespace std;
 using namespace std::chrono;
 
-template <class T>
-class ActiveObject {
-  rxcpp::subjects::subject<T> subj;
-
- protected:
-  ActiveObject() {
-    subj.get_observable().subscribe([=](T s) {
-      cout << "exec: " << s << endl;
-      Execute(s);
-    });
-  };
-  virtual void Execute(T s){};
-
- public:
-  void FireAndForget(T item) {
-    cout << "fire: " << item << endl;
-    subj.get_subscriber().on_next(item);
-  }
-  rxcpp::observable<T> GetObservable() { return subj.get_observable(); }
-  virtual ~ActiveObject() {}
+struct CHAT_EVENT {
+    std::string message;
+    CHAT_EVENT() {
+        message = "";
+    };
+    CHAT_EVENT(std::string pmessage) {
+        message = pmessage;
+    };
 };
 
-class ChatClient : private ISteamNetworkingSocketsCallbacks,
-                   public ActiveObject<string> {
-  virtual void Execute(string s) {}
 
+class ChatClient : private ISteamNetworkingSocketsCallbacks {
  public:
-  ChatClient(ConnectionManager *connectionManager) {
+  ChatClient(ConnectionManager *connectionManager, EventBus<CHAT_EVENT> *pchatEventBus): producerOne("Chat Client") {
     m_hConnection = connectionManager->steamSockets->ConnectByIPAddress(
         connectionManager->steamServerConnection, 0, nullptr);
     m_pInterface = connectionManager->steamSockets;
+    chatEventBus = pchatEventBus;
 
-    if (m_hConnection == k_HSteamNetConnection_Invalid)
-      FireAndForget("Failed to create connection");
+    if (m_hConnection == k_HSteamNetConnection_Invalid) {
+        producerOne.Emmit(CHAT_EVENT("Failed to create connection"), chatEventBus);
+    }
 
     // Using a pretty nifty task of abstraction
     std::thread([&]() {
@@ -73,7 +63,7 @@ class ChatClient : private ISteamNetworkingSocketsCallbacks,
   void SendMessage(string message) {
     if (strcmp(message.c_str(), "/quit") == 0) {
       quit = true;
-      FireAndForget("Disconnecting from chat server");
+      producerOne.Emmit(CHAT_EVENT("Disconnecting from chat server"), chatEventBus);
 
       // Close the connection gracefully.
       // We use linger mode to ask for any remaining reliable data
@@ -92,6 +82,9 @@ class ChatClient : private ISteamNetworkingSocketsCallbacks,
   //-- Dispatcher Object
   HSteamNetConnection m_hConnection;
   ISteamNetworkingSockets *m_pInterface;
+  Producer<CHAT_EVENT> producerOne;
+  EventBus<CHAT_EVENT> *chatEventBus;
+
   bool quit = false;
 
   void PollIncomingMessages() {
@@ -99,12 +92,12 @@ class ChatClient : private ISteamNetworkingSocketsCallbacks,
     int numMsgs = m_pInterface->ReceiveMessagesOnConnection(m_hConnection,
                                                             &pIncomingMsg, 1);
     if (numMsgs < 0) {
-      FireAndForget("Error checking for messages");
+      producerOne.Emmit(CHAT_EVENT("Error checking for messages"), this->chatEventBus);
     } else if (numMsgs != 0) {
       // Just echo anything we get from the server
-      FireAndForget(string(string((char *)(pIncomingMsg->GetData()),
+      producerOne.Emmit(CHAT_EVENT(string(string((char *)(pIncomingMsg->GetData()),
                                   pIncomingMsg->GetSize())) +
-                    "\n");
+                    "\n"), this->chatEventBus);
       // We don't need this anymore.
       pIncomingMsg->Release();
     }
@@ -137,19 +130,18 @@ class ChatClient : private ISteamNetworkingSocketsCallbacks,
             k_ESteamNetworkingConnectionState_Connecting) {
           // Note: we could distinguish between a timeout, a rejected
           // connection, or some other transport problem.
-          FireAndForget(
-              "We sought the remote host, yet our efforts were met with "
-              "defeat. " +
-              *(pInfo->m_info.m_szEndDebug));
+           
+        producerOne.Emmit(CHAT_EVENT( "We sought the remote host, yet our efforts were met with " "defeat. " +
+              *(pInfo->m_info.m_szEndDebug)), this->chatEventBus);
         } else if (pInfo->m_info.m_eState ==
                    k_ESteamNetworkingConnectionState_ProblemDetectedLocally) {
-          FireAndForget(
-              "Alas, troubles beset us; we have lost contact with the host. " +
-              *(pInfo->m_info.m_szEndDebug));
+          producerOne.Emmit(CHAT_EVENT("Alas, troubles beset us; we have lost contact with the host. " +
+              *(pInfo->m_info.m_szEndDebug)), this->chatEventBus);
         } else {
           // NOTE: We could check the reason code for a normal disconnection
-          FireAndForget("The host hath bidden us farewell. " +
-                        *(pInfo->m_info.m_szEndDebug));
+
+            producerOne.Emmit(CHAT_EVENT("The host hath bidden us farewell. " +
+                        *(pInfo->m_info.m_szEndDebug)), this->chatEventBus);
         }
 
         // Clean up the connection.  This is important!
@@ -169,7 +161,7 @@ class ChatClient : private ISteamNetworkingSocketsCallbacks,
         break;
 
       case k_ESteamNetworkingConnectionState_Connected:
-        FireAndForget("Connected to server OK");
+        producerOne.Emmit(CHAT_EVENT("Connected to server OK"), this->chatEventBus);
         break;
 
       default:

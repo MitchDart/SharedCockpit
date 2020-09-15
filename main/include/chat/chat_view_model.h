@@ -15,13 +15,14 @@ using namespace std::chrono;
 
 class ChatViewModel {
  public:
-  ChatViewModel(Environment* environment, std::string name,  ConnectionManager* connectionManager);
+  ChatViewModel(std::string name, EventBus<CHAT_EVENT> *chatEventBus);
   ~ChatViewModel();
+  ChatWindow* chatWindow;
 
  private:
-  Environment* environment;
   ChatClient* chatClient;
-  ChatWindow* chatWindow;
-  ConnectionManager* connectionManager;
+  Consumer<CHAT_EVENT> chatConsumer;
+
+  std::function<void(CHAT_EVENT)> handleChat;
 
 };

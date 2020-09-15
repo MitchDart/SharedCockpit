@@ -25,6 +25,8 @@
 #include "dataref.h"
 #include "standalone_window.h"
 #include <fstream>
+#include <chat/chat_client.hpp>
+#include <chat/chat_view_model.h>
 
 /** 
  * Standalone Environment
@@ -48,6 +50,7 @@ class StandaloneEnvironment : public Environment
 
         //Standalone Window
         StandaloneWindow* standAloneWindow;
+        ChatViewModel* chatViewModel;
 
         //Recording file stream
         std::ifstream* recordingFile = 0;
@@ -74,6 +77,4 @@ class StandaloneEnvironment : public Environment
 
         void onLaunch() override;
         void onExit() override;
-        Consumer<EVENT_INFO> consumerOne;
-        Consumer<EVENT_INFO> consumerTwo;
 };
